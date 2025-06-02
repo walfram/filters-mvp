@@ -1,0 +1,3 @@
+.table-card {
+  overflow: auto; /* optional: adds scroll if table overflows */
+}
