@@ -3,6 +3,7 @@ import {MatCard, MatCardActions} from '@angular/material/card';
 import {MatButton} from '@angular/material/button';
 import {MatDialog} from '@angular/material/dialog';
 import {AddFilterComponent} from '../../filters/add-filter/add-filter.component';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-filter-actions',
@@ -15,10 +16,14 @@ import {AddFilterComponent} from '../../filters/add-filter/add-filter.component'
   styleUrl: './filter-actions.component.css'
 })
 export class FilterActionsComponent {
-  constructor(private dialog: MatDialog) {}
+  constructor(
+    private dialog: MatDialog,
+    private router: Router
+  ) {}
 
   openAddFilterForm() {
     console.log('openAddFilterForm');
+    void this.router.navigate(['/filter/add']);
   }
 
   openAddFilterDialog() {
