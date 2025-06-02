@@ -1,0 +1,10 @@
+<form (ngSubmit)="save()" #form="ngForm">
+  <mat-form-field appearance="fill">
+    <mat-label>Filter Name</mat-label>
+    <input matInput [(ngModel)]="filterData.name" name="name" required />
+  </mat-form-field>
+
+  <!-- add more fields -->
+
+  <!-- Save button can be removed here if using in wrapper -->
+</form>

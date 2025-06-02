@@ -28,7 +28,7 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef> Actions</th>
       <td mat-cell *matCellDef="let item">
-        <button mat-icon-button color="primary" (click)="editItem(item)">
+        <button mat-icon-button color="primary" (click)="openEditFilterDialog(item)">
           <mat-icon>edit</mat-icon>
         </button>
         <button mat-icon-button color="accent" (click)="toggleStatus(item)">

@@ -15,6 +15,9 @@ import {MatChip} from '@angular/material/chips';
 import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {MatCard} from '@angular/material/card';
+import {AddFilterComponent} from '../../filters/add-filter/add-filter.component';
+import {MatDialog} from '@angular/material/dialog';
+import {EditFilterComponent} from '../../filters/edit-filter/edit-filter.component';
 
 @Component({
   selector: 'app-filter-table',
@@ -46,9 +49,20 @@ export class FilterTableComponent {
     // Add more items as needed
   ];
 
-  editItem(item: any) {
-    console.log('Edit', item);
-    // your logic
+  constructor(private dialog: MatDialog) {}
+
+  openEditFilterDialog(item: any) {
+    const dialogRef = this.dialog.open(EditFilterComponent, {
+      width: '400px', // optional
+      data: {
+        // pass any data to AddFilterComponent here
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('Dialog closed with result:', result);
+      // Handle any result from the dialog if needed
+    });
   }
 
   toggleStatus(item: any) {
