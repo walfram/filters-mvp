@@ -1,6 +1,6 @@
 import {Component, Inject, Optional} from '@angular/core';
 import {FilterFormComponent} from '../filter-form/filter-form.component';
-import {MAT_DIALOG_DATA, MatDialogActions, MatDialogRef} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
 import {MatButton} from '@angular/material/button';
 import {NgIf} from '@angular/common';
 
@@ -10,7 +10,10 @@ import {NgIf} from '@angular/common';
     FilterFormComponent,
     MatButton,
     MatDialogActions,
-    NgIf
+    NgIf,
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogClose
   ],
   templateUrl: './edit-filter.component.html',
   styleUrl: './edit-filter.component.css'
@@ -31,6 +34,7 @@ export class EditFilterComponent {
   }
 
   cancel() {
+    console.log('cancel edit filter');
     if (this.dialogRef) {
       this.dialogRef.close();
     }

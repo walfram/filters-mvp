@@ -1,12 +1,12 @@
 import {Component} from '@angular/core';
 import {FilterActionsComponent} from './filter-actions/filter-actions.component';
-import {FilterTableComponent} from './filter-list/filter-table.component';
+import {FilterListComponent} from './filter-list/filter-list.component';
 
 @Component({
   selector: 'app-home',
   imports: [
     FilterActionsComponent,
-    FilterTableComponent
+    FilterListComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'

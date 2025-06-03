@@ -1,5 +1,5 @@
 import {Component, Inject, Optional} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogActions, MatDialogRef} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
 import {NgIf} from '@angular/common';
 import {FilterFormComponent} from '../filter-form/filter-form.component';
 import {MatButton} from '@angular/material/button';
@@ -10,7 +10,9 @@ import {MatButton} from '@angular/material/button';
     NgIf,
     FilterFormComponent,
     MatDialogActions,
-    MatButton
+    MatButton,
+    MatDialogTitle,
+    MatDialogContent
   ],
   templateUrl: './add-filter.component.html',
   styleUrl: './add-filter.component.css'

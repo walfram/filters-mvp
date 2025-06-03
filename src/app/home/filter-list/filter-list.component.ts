@@ -15,7 +15,6 @@ import {MatChip} from '@angular/material/chips';
 import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {MatCard} from '@angular/material/card';
-import {AddFilterComponent} from '../../filters/add-filter/add-filter.component';
 import {MatDialog} from '@angular/material/dialog';
 import {EditFilterComponent} from '../../filters/edit-filter/edit-filter.component';
 
@@ -37,10 +36,10 @@ import {EditFilterComponent} from '../../filters/edit-filter/edit-filter.compone
     MatRowDef,
     MatCard,
   ],
-  templateUrl: './filter-table.component.html',
-  styleUrl: './filter-table.component.css'
+  templateUrl: './filter-list.component.html',
+  styleUrl: './filter-list.component.css'
 })
-export class FilterTableComponent {
+export class FilterListComponent {
   displayedColumns: string[] = ['title', 'conditions', 'status', 'actions'];
 
   dataSource = [
@@ -55,7 +54,7 @@ export class FilterTableComponent {
     const dialogRef = this.dialog.open(EditFilterComponent, {
       width: '400px', // optional
       data: {
-        // pass any data to AddFilterComponent here
+        filter: item
       },
     });
 

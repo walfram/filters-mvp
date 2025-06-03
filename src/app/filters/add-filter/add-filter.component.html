@@ -1,11 +1,15 @@
-<h2 *ngIf="dialogRef; else header">Add Filter</h2>
-<ng-template #header><h1>Add Filter</h1></ng-template>
+<h3 *ngIf="dialogRef; else header" mat-dialog-title>Add Filter</h3>
+<ng-template #header><h3>Add Filter</h3></ng-template>
 
-<app-filter-form
-  (submitForm)="onFormSubmit($event)"
-></app-filter-form>
+<mat-dialog-content class="mat-typography">
+  <app-filter-form
+    (submitForm)="onFormSubmit($event)"
+  ></app-filter-form>
+</mat-dialog-content>
 
-<div *ngIf="dialogRef" mat-dialog-actions>
-  <button mat-button (click)="cancel()">Cancel</button>
-  <button mat-button color="primary" (click)="onFormSubmit(null)">Save</button>
-</div>
+
+<mat-dialog-actions align="end" *ngIf="dialogRef">
+  <button mat-stroked-button (click)="cancel()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="onFormSubmit(null)">Save</button>
+</mat-dialog-actions>
+
