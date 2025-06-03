@@ -33,6 +33,7 @@ export class AddFilterComponent {
   }
 
   cancel() {
+    console.log('cancel add filter');
     if (this.dialogRef) {
       this.dialogRef.close();
     }
