@@ -3,12 +3,13 @@
 
 <mat-dialog-content class="mat-typography">
   <app-filter-form
+    #filterForm
     (submitForm)="onFormSubmit($event)"
   ></app-filter-form>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end" *ngIf="dialogRef">
   <button mat-stroked-button (click)="cancel()">Cancel</button>
-<!--  <button mat-flat-button color="primary" (click)="onFormSubmit(null)">Save</button>-->
+  <button mat-flat-button color="primary" (click)="filterForm.save()">Save</button>
 </mat-dialog-actions>
 
