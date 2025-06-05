@@ -4,6 +4,7 @@ import {MatButton} from '@angular/material/button';
 import {MatDialog} from '@angular/material/dialog';
 import {AddFilterComponent} from '../../filters/add-filter/add-filter.component';
 import {Router} from '@angular/router';
+import {Filter, newEmptyFilter} from '../../shared/filter-schemas-and-types';
 
 @Component({
   selector: 'app-filter-actions',
@@ -19,7 +20,8 @@ export class FilterActionsComponent {
   constructor(
     private dialog: MatDialog,
     private router: Router
-  ) {}
+  ) {
+  }
 
   openAddFilterForm() {
     console.log('openAddFilterForm');
@@ -27,10 +29,10 @@ export class FilterActionsComponent {
   }
 
   openAddFilterDialog() {
-    const dialogRef = this.dialog.open(AddFilterComponent, {
+    const dialogRef = this.dialog.open<AddFilterComponent, Filter, Filter>(AddFilterComponent, {
       width: '400px', // optional
       data: {
-        // pass any data to AddFilterComponent here
+        ...newEmptyFilter()
       },
     });
 

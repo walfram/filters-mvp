@@ -60,10 +60,10 @@ export class FilterListComponent implements OnInit {
   }
 
   openEditFilterDialog(filter: Filter) {
-    const dialogRef = this.dialog.open(EditFilterComponent, {
+    const dialogRef = this.dialog.open<EditFilterComponent, Filter, Filter>(EditFilterComponent, {
       width: '400px', // optional
       data: {
-        filter: filter
+        ...filter
       },
     });
 

@@ -16,7 +16,7 @@ import {Filter} from '../../shared/filter-schemas-and-types';
   styleUrl: './filter-form.component.css'
 })
 export class FilterFormComponent {
-  @Input() filterData!: Filter; // for edit prefill
+  @Input() filterData!: Filter;
   @Output() submitForm = new EventEmitter<Filter>();
 
   save() {

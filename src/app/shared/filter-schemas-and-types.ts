@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import {v4} from 'uuid';
 
 const AmountConditionSchema = z.object({
   type: z.literal('amount'),
@@ -39,3 +40,12 @@ export const FiltersSchema = z.array(FilterSchema);
 
 export type Filter = z.infer<typeof FilterSchema>;
 export type Filters = z.infer<typeof FiltersSchema>;
+
+export function newEmptyFilter(): Filter {
+  return {
+    id: v4(),
+    name: '',
+    conditions: [],
+    active: false
+  }
+}

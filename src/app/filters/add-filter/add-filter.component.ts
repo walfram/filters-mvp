@@ -19,10 +19,12 @@ import {Filter} from '../../shared/filter-schemas-and-types';
   styleUrl: './add-filter.component.css'
 })
 export class AddFilterComponent {
+
   constructor(
     @Optional() public dialogRef: MatDialogRef<AddFilterComponent>,
-    @Optional() @Inject(MAT_DIALOG_DATA) public data: Filter
-  ) {}
+    @Optional() @Inject(MAT_DIALOG_DATA) public filter: Filter
+  ) {
+  }
 
   onFormSubmit(filter: Filter) {
     if (this.dialogRef) {

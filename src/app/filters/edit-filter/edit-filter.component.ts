@@ -22,8 +22,10 @@ import {Filter} from '../../shared/filter-schemas-and-types';
 export class EditFilterComponent {
   constructor(
     @Optional() public dialogRef: MatDialogRef<EditFilterComponent>,
-    @Optional() @Inject(MAT_DIALOG_DATA) public data: Filter
-  ) {}
+    @Optional() @Inject(MAT_DIALOG_DATA) public filter: Filter
+  ) {
+    console.log(filter);
+  }
 
   onFormSubmit(filter: Filter) {
     if (this.dialogRef) {

@@ -4,6 +4,7 @@
 <mat-dialog-content class="mat-typography">
   <app-filter-form
     #filterForm
+    [filterData]="filter"
     (submitForm)="onFormSubmit($event)"
   ></app-filter-form>
 </mat-dialog-content>
