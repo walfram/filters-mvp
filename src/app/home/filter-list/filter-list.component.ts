@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {
   MatCell,
   MatCellDef,
@@ -17,6 +17,8 @@ import {MatIcon} from '@angular/material/icon';
 import {MatCard} from '@angular/material/card';
 import {MatDialog} from '@angular/material/dialog';
 import {EditFilterComponent} from '../../filters/edit-filter/edit-filter.component';
+import {LocalFilterService} from '../../filters/services/local-filter.service';
+import {Filter} from '../../shared/filter-schemas-and-types';
 
 @Component({
   selector: 'app-filter-table',
@@ -39,36 +41,45 @@ import {EditFilterComponent} from '../../filters/edit-filter/edit-filter.compone
   templateUrl: './filter-list.component.html',
   styleUrl: './filter-list.component.css'
 })
-export class FilterListComponent {
+export class FilterListComponent implements OnInit {
   displayedColumns: string[] = ['title', 'conditions', 'status', 'actions'];
 
-  dataSource = [
-    { title: 'Item A', conditions: 5, status: 'Active' },
-    { title: 'Item B', conditions: 2, status: 'Not Active' },
-    // Add more items as needed
-  ];
+  dataSource: Filter[] = [];
 
-  constructor(private dialog: MatDialog) {}
+  constructor(
+    private dialog: MatDialog,
+    private filterService: LocalFilterService
+  ) {
+  }
 
-  openEditFilterDialog(item: any) {
+  ngOnInit(): void {
+    this.filterService.filters()
+      .subscribe((filters: Filter[]) => {
+        this.dataSource = filters;
+      });
+  }
+
+  openEditFilterDialog(filter: Filter) {
     const dialogRef = this.dialog.open(EditFilterComponent, {
       width: '400px', // optional
       data: {
-        filter: item
+        filter: filter
       },
     });
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('Dialog closed with result:', result);
-      // Handle any result from the dialog if needed
     });
   }
 
-  toggleStatus(item: any) {
-    item.status = item.status === 'Active' ? 'Not Active' : 'Active';
+  toggleStatus(filter: Filter) {
+    console.log(filter);
+    filter.active = !filter.active;
+    this.filterService.updateFilter(filter);
   }
 
-  deleteItem(item: any) {
-    this.dataSource = this.dataSource.filter(i => i !== item);
+  deleteFilter(filter: Filter) {
+    // TODO confirmation
+    this.filterService.deleteFilter(filter.id);
   }
 }

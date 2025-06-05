@@ -3,6 +3,7 @@ import {FilterFormComponent} from '../filter-form/filter-form.component';
 import {MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
 import {MatButton} from '@angular/material/button';
 import {NgIf} from '@angular/common';
+import {Filter} from '../../shared/filter-schemas-and-types';
 
 @Component({
   selector: 'app-edit-filter',
@@ -21,10 +22,10 @@ import {NgIf} from '@angular/common';
 export class EditFilterComponent {
   constructor(
     @Optional() public dialogRef: MatDialogRef<EditFilterComponent>,
-    @Optional() @Inject(MAT_DIALOG_DATA) public data: any
+    @Optional() @Inject(MAT_DIALOG_DATA) public data: Filter
   ) {}
 
-  onFormSubmit(filter: any) {
+  onFormSubmit(filter: Filter) {
     if (this.dialogRef) {
       this.dialogRef.close(filter);
     } else {

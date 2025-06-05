@@ -4,7 +4,7 @@
 <mat-dialog-content class="mat-typography">
   <app-filter-form
     (submitForm)="onFormSubmit($event)"
-    [filterData]="data?.filter"
+    [filterData]="data"
   >
   </app-filter-form>
 </mat-dialog-content>
@@ -12,6 +12,6 @@
 
 <mat-dialog-actions align="end" *ngIf="dialogRef">
   <button mat-stroked-button mat-dialog-close (click)="cancel()">Cancel</button>
-  <button mat-flat-button color="primary" (click)="onFormSubmit(null)">Save</button>
+<!--  <button mat-flat-button color="primary" (click)="onFormSubmit(null)">Save</button>-->
 </mat-dialog-actions>
 
