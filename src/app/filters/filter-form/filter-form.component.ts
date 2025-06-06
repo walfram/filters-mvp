@@ -3,12 +3,13 @@ import {FormsModule} from '@angular/forms';
 import {MatFormField, MatHint, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {amountOperators, conditionTypes, dateOperators, Filter, FilterCondition, titleOperators} from '../../shared/filter-schemas-and-types';
-import {MatButton} from '@angular/material/button';
+import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatSelect} from '@angular/material/select';
 import {MatOption} from '@angular/material/core';
 import {TitleCasePipe} from '@angular/common';
 import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
 import {provideNativeDateAdapter} from '@angular/material/core';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'app-filter-form',
@@ -24,7 +25,9 @@ import {provideNativeDateAdapter} from '@angular/material/core';
     MatDatepickerInput,
     MatDatepickerToggle,
     MatDatepicker,
-    MatHint
+    MatHint,
+    MatIconButton,
+    MatIcon
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './filter-form.component.html',
@@ -50,5 +53,9 @@ export class FilterFormComponent {
 
   onConditionTypeChange(condition: FilterCondition, newType: string) {
     console.log('condition change', condition, 'new type', newType);
+  }
+
+  removeCondition(index: number) {
+    this.filterData.conditions.splice(index, 1);
   }
 }
