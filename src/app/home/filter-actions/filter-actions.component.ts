@@ -30,10 +30,11 @@ export class FilterActionsComponent {
 
   openAddFilterDialog() {
     const dialogRef = this.dialog.open<AddFilterComponent, Filter, Filter>(AddFilterComponent, {
-      width: '400px', // optional
+      width: '600px',
       data: {
         ...newEmptyFilter()
       },
+      hasBackdrop: true,
     });
 
     dialogRef.afterClosed().subscribe(result => {
