@@ -4,6 +4,7 @@ import {NgIf} from '@angular/common';
 import {FilterFormComponent} from '../filter-form/filter-form.component';
 import {MatButton} from '@angular/material/button';
 import {Filter} from '../../shared/filter-schemas-and-types';
+import {FILTER_SERVICE, FilterService} from '../services/filter-service';
 
 @Component({
   selector: 'app-add-filter',
@@ -22,11 +23,14 @@ export class AddFilterComponent {
 
   constructor(
     @Optional() public dialogRef: MatDialogRef<AddFilterComponent>,
-    @Optional() @Inject(MAT_DIALOG_DATA) public filter: Filter
+    @Optional() @Inject(MAT_DIALOG_DATA) public filter: Filter,
+    @Inject(FILTER_SERVICE) private filterService: FilterService
   ) {
   }
 
   onFormSubmit(filter: Filter) {
+    this.filterService.addFilter(filter);
+
     if (this.dialogRef) {
       this.dialogRef.close(filter);
     } else {

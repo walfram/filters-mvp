@@ -4,9 +4,7 @@ import {Observable} from 'rxjs';
 import {Filter, Filters} from '../../shared/filter-schemas-and-types';
 import {HttpClient} from '@angular/common/http';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class RestFilterService implements FilterService {
 
   constructor(private http: HttpClient) {

@@ -1,4 +1,24 @@
 <form (ngSubmit)="save()" #form="ngForm">
+
+  @if (validationErrors.length > 0) {
+    <div class="validation-errors">
+
+      <mat-card class="message-card error-card">
+        <mat-card-content>
+          <div class="card-message">
+            <mat-icon class="card-icon">error</mat-icon>
+            <div class="card-text">
+              @for (error of validationErrors; track $index) {
+                <p>{{ error }}</p>
+              }
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+  }
+
   <mat-form-field appearance="fill" class="w-100">
     <mat-label>Filter Name</mat-label>
     <input matInput [(ngModel)]="filterData.name" name="name" required/>

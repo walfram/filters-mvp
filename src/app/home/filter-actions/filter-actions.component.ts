@@ -41,7 +41,6 @@ export class FilterActionsComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('Dialog closed with result:', result);
-      // Handle any result from the dialog if needed
     });
   }
 }

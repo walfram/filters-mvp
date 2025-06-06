@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {
   MatCell,
   MatCellDef,
@@ -17,8 +17,8 @@ import {MatIcon} from '@angular/material/icon';
 import {MatCard} from '@angular/material/card';
 import {MatDialog} from '@angular/material/dialog';
 import {EditFilterComponent} from '../../filters/edit-filter/edit-filter.component';
-import {LocalFilterService} from '../../filters/services/local-filter.service';
 import {Filter} from '../../shared/filter-schemas-and-types';
+import {FILTER_SERVICE, FilterService} from '../../filters/services/filter-service';
 
 @Component({
   selector: 'app-filter-table',
@@ -48,7 +48,7 @@ export class FilterListComponent implements OnInit {
 
   constructor(
     private dialog: MatDialog,
-    private filterService: LocalFilterService
+    @Inject(FILTER_SERVICE) private filterService: FilterService
   ) {
   }
 

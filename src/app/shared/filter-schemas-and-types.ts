@@ -11,7 +11,7 @@ export const amountOperators = AmountConditionSchema.shape.operator.options;
 export const TitleConditionSchema = z.object({
   type: z.literal('title'),
   operator: z.enum(['startsWith', 'contains', 'equals']),
-  value: z.string(),
+  value: z.string().min(1, 'Value is required'),
 });
 export const titleOperators = TitleConditionSchema.shape.operator.options;
 

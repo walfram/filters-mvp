@@ -4,9 +4,7 @@ import {Filter, Filters} from '../../shared/filter-schemas-and-types';
 import {MOCKED_FILTERS} from '../../mocks/mocked-filters';
 import {FilterService} from './filter-service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class LocalFilterService implements FilterService {
 
   private filters$: BehaviorSubject<Filters>;
