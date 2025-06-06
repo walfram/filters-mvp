@@ -1,19 +1,19 @@
 import { z } from 'zod';
 import {v4} from 'uuid';
 
-const AmountConditionSchema = z.object({
+export const AmountConditionSchema = z.object({
   type: z.literal('amount'),
   operator: z.enum(['>', '>=', '=', '<=', '<']),
   value: z.number(),
 });
 
-const TitleConditionSchema = z.object({
+export const TitleConditionSchema = z.object({
   type: z.literal('title'),
   operator: z.enum(['startsWith', 'contains', 'equals']),
   value: z.string(),
 });
 
-const DateConditionSchema = z.object({
+export const DateConditionSchema = z.object({
   type: z.literal('date'),
   operator: z.enum(['before', 'after', 'on']),
   value: z
@@ -23,11 +23,22 @@ const DateConditionSchema = z.object({
     }),
 });
 
-const FilterConditionSchema = z.union([
+export type AmountCondition = z.infer<typeof AmountConditionSchema>;
+export type TitleCondition = z.infer<typeof TitleConditionSchema>;
+export type DateCondition = z.infer<typeof DateConditionSchema>;
+
+export const FilterConditionSchema = z.union([
   AmountConditionSchema,
   TitleConditionSchema,
   DateConditionSchema,
 ]);
+
+export type FilterCondition = z.infer<typeof FilterConditionSchema>;
+export type FilterConditionType = FilterCondition['type'];
+
+export const conditionTypeOptions: FilterConditionType[] = FilterConditionSchema.options.map(
+  schema => schema.shape.type.value
+);
 
 export const FilterSchema = z.object({
   id: z.string().uuid(),

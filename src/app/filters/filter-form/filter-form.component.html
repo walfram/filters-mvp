@@ -4,12 +4,43 @@
     <input matInput [(ngModel)]="filterData.name" name="name" required/>
   </mat-form-field>
 
-  <div *ngIf="filterData.conditions.length === 0; else listConditions" class="no-conditions">
-    <p>No conditions added yet.</p>
-  </div>
+  @if (!filterData.conditions) {
+    <div class="no-conditions">
+      <p>No conditions added yet.</p>
+      <button mat-stroked-button color="accent" type="button" (click)="addCondition()">Add Condition</button>
+    </div>
+  } @else {
+    @for (condition of filterData.conditions; track $index) {
 
-  <ng-template #listConditions>
-    {{ filterData.conditions.length }}
-  </ng-template>
+      <mat-form-field appearance="fill">
+        <mat-label>Condition Type</mat-label>
+        <mat-select
+          [(value)]="condition.type"
+          (selectionChange)="onConditionTypeChange(condition, $event.value)"
+        >
+          @for (type of conditionTypeOptions; track $index) {
+            <mat-option [value]="type">
+              {{ type | titlecase }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      @switch (condition.type) {
+        @case ('title') {
+          <div>title</div>
+        }
+
+        @case ('amount') {
+          <div>title</div>
+        }
+
+        @case ('date') {
+          <div>date</div>
+        }
+      }
+
+    }
+  }
 
 </form>
