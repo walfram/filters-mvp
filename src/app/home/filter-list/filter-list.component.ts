@@ -62,6 +62,8 @@ export class FilterListComponent implements OnInit {
   openEditFilterDialog(filter: Filter) {
     const dialogRef = this.dialog.open<EditFilterComponent, Filter, Filter>(EditFilterComponent, {
       width: '600px',
+      minHeight: '600px',
+      maxHeight: '90vw',
       data: {
         ...filter
       },

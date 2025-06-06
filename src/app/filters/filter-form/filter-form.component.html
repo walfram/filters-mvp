@@ -1,10 +1,15 @@
 <form (ngSubmit)="save()" #form="ngForm">
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="fill" class="w-100">
     <mat-label>Filter Name</mat-label>
-    <input matInput [(ngModel)]="filterData.name" name="name" required />
+    <input matInput [(ngModel)]="filterData.name" name="name" required/>
   </mat-form-field>
 
-  <!-- add more fields -->
+  <div *ngIf="filterData.conditions.length === 0; else listConditions" class="no-conditions">
+    <p>No conditions added yet.</p>
+  </div>
 
-  <!-- Save button can be removed here if using in wrapper -->
+  <ng-template #listConditions>
+    {{ filterData.conditions.length }}
+  </ng-template>
+
 </form>

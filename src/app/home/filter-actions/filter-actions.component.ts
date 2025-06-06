@@ -31,6 +31,8 @@ export class FilterActionsComponent {
   openAddFilterDialog() {
     const dialogRef = this.dialog.open<AddFilterComponent, Filter, Filter>(AddFilterComponent, {
       width: '600px',
+      minHeight: '600px',
+      maxHeight: '90vw',
       data: {
         ...newEmptyFilter()
       },
