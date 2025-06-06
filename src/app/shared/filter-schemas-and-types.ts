@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import {z} from 'zod';
 import {v4} from 'uuid';
 
 export const AmountConditionSchema = z.object({
@@ -6,12 +6,14 @@ export const AmountConditionSchema = z.object({
   operator: z.enum(['>', '>=', '=', '<=', '<']),
   value: z.number(),
 });
+export const amountOperators = AmountConditionSchema.shape.operator.options;
 
 export const TitleConditionSchema = z.object({
   type: z.literal('title'),
   operator: z.enum(['startsWith', 'contains', 'equals']),
   value: z.string(),
 });
+export const titleOperators = TitleConditionSchema.shape.operator.options;
 
 export const DateConditionSchema = z.object({
   type: z.literal('date'),
@@ -22,6 +24,7 @@ export const DateConditionSchema = z.object({
       message: 'Invalid ISO date string',
     }),
 });
+export const dateOperators = DateConditionSchema.shape.operator.options;
 
 export type AmountCondition = z.infer<typeof AmountConditionSchema>;
 export type TitleCondition = z.infer<typeof TitleConditionSchema>;
@@ -36,7 +39,7 @@ export const FilterConditionSchema = z.union([
 export type FilterCondition = z.infer<typeof FilterConditionSchema>;
 export type FilterConditionType = FilterCondition['type'];
 
-export const conditionTypeOptions: FilterConditionType[] = FilterConditionSchema.options.map(
+export const conditionTypes: FilterConditionType[] = FilterConditionSchema.options.map(
   schema => schema.shape.type.value
 );
 

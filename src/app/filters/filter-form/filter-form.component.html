@@ -7,40 +7,100 @@
   @if (!filterData.conditions) {
     <div class="no-conditions">
       <p>No conditions added yet.</p>
-      <button mat-stroked-button color="accent" type="button" (click)="addCondition()">Add Condition</button>
     </div>
   } @else {
+
     @for (condition of filterData.conditions; track $index) {
 
-      <mat-form-field appearance="fill">
-        <mat-label>Condition Type</mat-label>
-        <mat-select
-          [(value)]="condition.type"
-          (selectionChange)="onConditionTypeChange(condition, $event.value)"
-        >
-          @for (type of conditionTypeOptions; track $index) {
-            <mat-option [value]="type">
-              {{ type | titlecase }}
-            </mat-option>
+      <div class="conditions">
+        <mat-form-field appearance="fill">
+          <mat-label>Condition Type</mat-label>
+          <mat-select
+            [(value)]="condition.type"
+            (selectionChange)="onConditionTypeChange(condition, $event.value)"
+          >
+            @for (type of conditionTypes; track $index) {
+              <mat-option [value]="type">
+                {{ type | titlecase }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        @switch (condition.type) {
+          @case ('title') {
+            <mat-form-field appearance="fill">
+              <mat-label>Operator</mat-label>
+              <mat-select [(value)]="condition.operator">
+                @for (operator of titleOperators; track $index) {
+                  <mat-option [value]="operator">
+                    {{ operator | titlecase }}
+                  </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+              <mat-label>Value</mat-label>
+              <input matInput
+                     [(ngModel)]="condition.value"
+                     [name]="'value' + $index"
+                     required
+              />
+            </mat-form-field>
           }
-        </mat-select>
-      </mat-form-field>
+          @case ('amount') {
+            <mat-form-field appearance="fill">
+              <mat-label>Operator</mat-label>
+              <mat-select [(value)]="condition.operator">
+                @for (operator of amountOperators; track $index) {
+                  <mat-option [value]="operator">
+                    {{ operator | titlecase }}
+                  </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
 
-      @switch (condition.type) {
-        @case ('title') {
-          <div>title</div>
+            <mat-form-field appearance="fill">
+              <mat-label>Value</mat-label>
+              <input matInput
+                     [(ngModel)]="condition.value"
+                     [name]="'value' + $index"
+                     required
+              />
+            </mat-form-field>
+          }
+          @case ('date') {
+            <mat-form-field appearance="fill">
+              <mat-label>Operator</mat-label>
+              <mat-select [(value)]="condition.operator">
+                @for (operator of dateOperators; track $index) {
+                  <mat-option [value]="operator">
+                    {{ operator | titlecase }}
+                  </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Choose a date</mat-label>
+              <input matInput
+                     [name]="'value' + $index"
+                     [matDatepicker]="picker"
+                     [(ngModel)]="condition.value"
+              />
+              <mat-hint>MM/DD/YYYY</mat-hint>
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          }
         }
-
-        @case ('amount') {
-          <div>title</div>
-        }
-
-        @case ('date') {
-          <div>date</div>
-        }
-      }
-
+      </div>
     }
   }
+
+  <div>
+    <button mat-stroked-button color="accent" type="button" (click)="addCondition()">Add Condition</button>
+  </div>
 
 </form>
