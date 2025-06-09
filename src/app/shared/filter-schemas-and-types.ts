@@ -63,3 +63,28 @@ export function newEmptyFilter(): Filter {
     active: false
   }
 }
+
+export function newEmptyCondition(type: FilterConditionType): FilterCondition {
+  switch (type) {
+    case 'amount':
+      return {
+        type: 'amount',
+        operator: amountOperators[0],
+        value: 0,
+      };
+    case 'title':
+      return {
+        type: 'title',
+        operator: titleOperators[0],
+        value: '',
+      };
+    case 'date':
+      return {
+        type: 'date',
+        operator: dateOperators[0],
+        value: new Date().toISOString().split('T')[0],
+      };
+    default:
+      throw new Error(`Unsupported condition type: ${type}`);
+  }
+}
