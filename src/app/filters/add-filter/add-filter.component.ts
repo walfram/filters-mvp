@@ -24,7 +24,7 @@ export class AddFilterComponent {
   constructor(
     @Optional() public dialogRef: MatDialogRef<AddFilterComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public filter: Filter,
-    @Inject(FILTER_SERVICE) private filterService: FilterService
+    @Inject(FILTER_SERVICE) private readonly filterService: FilterService
   ) {
   }
 

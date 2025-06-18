@@ -21,7 +21,7 @@ import {Filter} from '../../shared/filter-schemas-and-types';
 import {FILTER_SERVICE, FilterService} from '../../filters/services/filter-service';
 
 @Component({
-  selector: 'app-filter-table',
+  selector: 'app-filter-list',
   imports: [
     MatTable,
     MatChip,
@@ -47,8 +47,8 @@ export class FilterListComponent implements OnInit {
   dataSource: Filter[] = [];
 
   constructor(
-    private dialog: MatDialog,
-    @Inject(FILTER_SERVICE) private filterService: FilterService
+    private readonly dialog: MatDialog,
+    @Inject(FILTER_SERVICE) private readonly filterService: FilterService
   ) {
   }
 
@@ -61,9 +61,8 @@ export class FilterListComponent implements OnInit {
 
   openEditFilterDialog(filter: Filter) {
     const dialogRef = this.dialog.open<EditFilterComponent, Filter, Filter>(EditFilterComponent, {
-      width: '600px',
-      minHeight: '600px',
-      maxHeight: '90vw',
+      maxWidth: '90vw',
+      maxHeight: '90vh',
       data: {
         ...filter
       },

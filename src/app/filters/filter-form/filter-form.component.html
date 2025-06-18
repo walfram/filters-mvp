@@ -1,37 +1,25 @@
-<!-- filter-form.component.html -->
-<form (ngSubmit)="save()" #form="ngForm">
+<form [formGroup]="form" class="filter-form" style="display: flex; flex-direction: column; gap: 1rem;"
+      (ngSubmit)="onSubmit()">
 
-  <mat-form-field
-    appearance="fill"
-    [class.field-error]="hasFieldError('name')"
-  >
+  <mat-form-field appearance="fill" subscriptSizing="dynamic">
     <mat-label>Filter Name</mat-label>
-    <input
-      matInput
-      [(ngModel)]="filterData.name"
-      name="name"
-      required
-      (input)="onFieldChange()"
-    />
-    @if (hasFieldError('name')) {
-      <mat-error>{{ getFieldError('name') }}</mat-error>
+    <input matInput formControlName="name"/>
+    @if (form.hasError('required', 'name') && (form.get('name')?.touched || submitted)) {
+      <mat-error>
+        Filter name is required
+      </mat-error>
     }
   </mat-form-field>
 
-  @if (!filterData.conditions || filterData.conditions.length === 0) {
-    <div class="no-conditions">
-      <p>No conditions added yet.</p>
-    </div>
-  } @else {
+  <mat-checkbox formControlName="active">Active</mat-checkbox>
 
-    @for (condition of filterData.conditions; track $index) {
-      <div class="conditions">
-        <mat-form-field appearance="fill">
-          <mat-label>Condition Type</mat-label>
-          <mat-select
-            [(value)]="condition.type"
-            (selectionChange)="onConditionTypeChange(condition, $event.value)"
-          >
+  <div formArrayName="conditions" class="conditions">
+    @for (condition of conditions.controls; track condition; let i = $index) {
+      <div [formGroupName]="i" class="condition-group">
+
+        <mat-form-field appearance="fill" subscriptSizing="dynamic">
+          <mat-label>Type</mat-label>
+          <mat-select formControlName="type">
             @for (type of conditionTypes; track $index) {
               <mat-option [value]="type">
                 {{ type | titlecase }}
@@ -40,105 +28,41 @@
           </mat-select>
         </mat-form-field>
 
-        @switch (condition.type) {
-          @case ('title') {
-            <mat-form-field appearance="fill">
-              <mat-label>Operator</mat-label>
-              <mat-select
-                [(value)]="condition.operator"
-                (selectionChange)="onFieldChange()"
-              >
-                @for (operator of titleOperators; track $index) {
-                  <mat-option [value]="operator">
-                    {{ operator | titlecase }}
-                  </mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Operator</mat-label>
+          <mat-select
+            [(value)]="condition.operator"
+            (selectionChange)="onFieldChange()"
+            formArrayName="operator"
+          >
+            @let ops = operators(condition.type);
+            @for (operator of ops; track $index) {
+              <mat-option [value]="operator">
+                {{ operator | titlecase }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
 
-            <mat-form-field
-              appearance="fill"
-            >
-              <mat-label>Value</mat-label>
-              <input
-                matInput
-                [(ngModel)]="condition.value"
-                [name]="'value' + $index"
-                required
-                (input)="onFieldChange()"
-              />
-            </mat-form-field>
-          }
-          @case ('amount') {
-            <mat-form-field appearance="fill">
-              <mat-label>Operator</mat-label>
-              <mat-select
-                [(value)]="condition.operator"
-                (selectionChange)="onFieldChange()"
-              >
-                @for (operator of amountOperators; track $index) {
-                  <mat-option [value]="operator">
-                    {{ operator | titlecase }}
-                  </mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
+        <mat-form-field appearance="fill" subscriptSizing="dynamic">
+          <mat-label>Value</mat-label>
+          <input matInput formControlName="value"/>
+        </mat-form-field>
 
-            <mat-form-field appearance="fill">
-              <mat-label>Value</mat-label>
-              <input
-                matInput
-                [(ngModel)]="condition.value"
-                [name]="'value' + $index"
-                required
-                (input)="onFieldChange()"
-              />
-            </mat-form-field>
-          }
-          @case ('date') {
-            <mat-form-field appearance="fill">
-              <mat-label>Operator</mat-label>
-              <mat-select
-                [(value)]="condition.operator"
-                (selectionChange)="onFieldChange()"
-              >
-                @for (operator of dateOperators; track $index) {
-                  <mat-option [value]="operator">
-                    {{ operator | titlecase }}
-                  </mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
-
-            <mat-form-field>
-              <mat-label>Choose a date</mat-label>
-              <input
-                matInput
-                [name]="'value' + $index"
-                [matDatepicker]="picker"
-                [(ngModel)]="condition.value"
-                (dateChange)="onFieldChange()"
-              />
-              <mat-hint>MM/DD/YYYY</mat-hint>
-              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker #picker></mat-datepicker>
-            </mat-form-field>
-          }
-        }
-
-        <button mat-icon-button color="warn" type="button" (click)="removeCondition($index)">
+        <button mat-icon-button color="warn" type="button" (click)="removeCondition(i)" aria-label="Remove condition"
+                class="condition-delete-btn">
           <mat-icon>delete</mat-icon>
         </button>
       </div>
 
-      @if (hasConditionFieldError($index)) {
-        <mat-error>{{ getConditionFieldError($index) }}</mat-error>
+      @if (condition.invalid && (condition.get('type')?.touched || condition.get('operator')?.touched || condition.get('value')?.touched || submitted)) {
+        <mat-error class="condition-error">
+          Please fill in all condition fields
+        </mat-error>
       }
     }
-  }
-
-  <div>
-    <button mat-stroked-button color="accent" type="button" (click)="addCondition()">Add Condition</button>
   </div>
+
+  <button mat-button type="button" (click)="addCondition()">Add Condition</button>
 
 </form>

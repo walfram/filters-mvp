@@ -13,6 +13,6 @@
 
 <mat-dialog-actions align="end" *ngIf="dialogRef">
   <button mat-stroked-button mat-dialog-close (click)="cancel()">Cancel</button>
-  <button mat-flat-button color="primary" (click)="filterForm.save()">Save</button>
+  <button mat-flat-button color="primary" (click)="filterForm.onSubmit()">Save</button>
 </mat-dialog-actions>
 

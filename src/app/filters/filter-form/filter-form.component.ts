@@ -1,159 +1,128 @@
-// filter-form.component.ts
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {FormsModule} from '@angular/forms';
-import {MatError, MatFormField, MatHint, MatLabel} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {
+  AmountOperator,
   amountOperators,
   conditionTypes,
-  dateOperators,
+  DateOperator, dateOperators,
   Filter,
   FilterCondition,
   FilterConditionType,
   FilterSchema,
-  newEmptyCondition,
+  TitleOperator,
   titleOperators
 } from '../../shared/filter-schemas-and-types';
+import {zodValidator} from '../../shared/zod-validator';
+import {v4} from 'uuid';
+import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {MatOption, MatSelect} from '@angular/material/select';
+import {MatCheckbox} from '@angular/material/checkbox';
 import {MatButton, MatIconButton} from '@angular/material/button';
-import {MatSelect} from '@angular/material/select';
-import {MatOption, provideNativeDateAdapter} from '@angular/material/core';
-import {TitleCasePipe} from '@angular/common';
-import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
 import {MatIcon} from '@angular/material/icon';
-import {ZodError} from 'zod';
-
-interface FieldError {
-  field: string;
-  message: string;
-}
+import {TitleCasePipe} from '@angular/common';
 
 @Component({
   selector: 'app-filter-form',
+  styleUrls: ['./filter-form.component.css'],
+  templateUrl: './filter-form.component.html',
   imports: [
-    FormsModule,
+    ReactiveFormsModule,
     MatFormField,
+    MatCheckbox,
     MatInput,
-    MatLabel,
-    MatButton,
     MatSelect,
     MatOption,
-    TitleCasePipe,
-    MatDatepickerInput,
-    MatDatepickerToggle,
-    MatDatepicker,
-    MatHint,
-    MatIconButton,
     MatIcon,
-    MatError
-  ],
-  providers: [provideNativeDateAdapter()],
-  templateUrl: './filter-form.component.html',
-  styleUrl: './filter-form.component.css'
+    MatError,
+    MatButton,
+    MatIconButton,
+    MatLabel,
+    TitleCasePipe
+  ]
 })
-export class FilterFormComponent {
-  @Input() filterData!: Filter;
+export class FilterFormComponent implements OnInit {
   @Output() submitForm = new EventEmitter<Filter>();
+  @Input() filterData!: Filter;
+
+  form!: FormGroup;
+  submitted: boolean = false;
 
   protected readonly conditionTypes = conditionTypes;
-  protected readonly titleOperators = titleOperators;
-  protected readonly amountOperators = amountOperators;
-  protected readonly dateOperators = dateOperators;
 
-  validationErrors: string[] = [];
-  fieldErrors: FieldError[] = [];
-
-  save() {
-    try {
-      const parsed = FilterSchema.parse(this.filterData);
-      console.log('parsed', parsed);
-      this.clearValidationErrors();
-      this.submitForm.emit(this.filterData);
-    } catch (error) {
-      if (error instanceof ZodError) {
-        console.log(error);
-        this.processZodErrors(error);
-      }
-    }
+  constructor(private fb: FormBuilder) {
   }
 
-  private processZodErrors(error: ZodError) {
-    this.validationErrors = [];
-    this.fieldErrors = [];
+  ngOnInit(): void {
+    console.log('this.filterData', this.filterData);
+    this.form = this.createFilterForm(this.filterData);
+  }
 
-    error.errors.forEach(err => {
-      const path = err.path.slice(0, 2).join('.');
+  createFilterForm(filter?: Filter): FormGroup {
+    return this.fb.nonNullable.group(
+      {
+        id: this.fb.control(filter?.id ?? v4()),
+        name: this.fb.nonNullable.control(filter?.name ?? '', {
+          validators: [Validators.required],
+        }),
+        active: this.fb.nonNullable.control(filter?.active ?? true),
+        conditions: this.fb.nonNullable.array(filter?.conditions.map(c => this.createConditionForm(c)) ?? []),
+      },
+      {
+        validators: [zodValidator(FilterSchema)],
+      }
+    );
+  }
 
-      // Add to general validation errors for display
-      this.validationErrors.push(err.message);
-
-      // Add to field-specific errors for highlighting
-      this.fieldErrors.push({
-        field: path,
-        message: err.message
-      });
+  createConditionForm(condition?: FilterCondition): FormGroup {
+    console.log('createConditionForm', condition);
+    return this.fb.nonNullable.group({
+      type: this.fb.nonNullable.control(condition?.type ?? '', [Validators.required]),
+      operator: this.fb.nonNullable.control(condition?.operator ?? '', [Validators.required]),
+      value: this.fb.nonNullable.control(condition?.value ?? '', [Validators.required]),
     });
   }
 
-  private clearValidationErrors() {
-    this.validationErrors = [];
-    this.fieldErrors = [];
-  }
-
-  // Helper method to check if a field has an error
-  hasFieldError(fieldPath: string): boolean {
-    return this.fieldErrors.some(error => error.field === fieldPath);
-  }
-
-  // Get error message for a specific field
-  getFieldError(fieldPath: string): string | null {
-    const error = this.fieldErrors.find(error => error.field === fieldPath);
-    return error ? error.message : null;
-  }
-
-  // Helper methods for condition field errors
-  hasConditionFieldError(conditionIndex: number): boolean {
-    return this.hasFieldError(`conditions.${conditionIndex}`);
-  }
-
-  getConditionFieldError(conditionIndex: number): string | null {
-    return this.getFieldError(`conditions.${conditionIndex}`);
+  get conditions() {
+    return this.form.get('conditions') as FormArray;
   }
 
   addCondition() {
-    console.log('add condition');
-    if (!this.filterData.conditions) {
-      this.filterData.conditions = [];
-    }
-    this.filterData.conditions.push({
-      type: 'title',
-      operator: 'contains',
-      value: ''
-    });
-  }
+    this.conditions.push(this.createConditionForm());
 
-  onConditionTypeChange(condition: FilterCondition, newType: FilterConditionType) {
-    console.log('condition change', condition, 'new type', newType);
-
-    const c = newEmptyCondition(newType);
-
-    condition.type = newType;
-    condition.operator = c.operator;
-    condition.value = c.value;
-
-    this.clearValidationErrors();
+    this.form.markAsUntouched();
+    this.submitted = false;
   }
 
   removeCondition(index: number) {
-    this.filterData.conditions.splice(index, 1);
-    // Clear validation errors when conditions change
-    this.clearValidationErrors();
+    this.conditions.removeAt(index);
+
+    this.form.markAsUntouched();
+    this.submitted = false;
   }
 
-  // Clear validation errors when user types (optional - for real-time clearing)
-  onFieldChange() {
-    if (this.fieldErrors.length > 0) {
-      // Optionally clear errors on field change for better UX
-      this.clearValidationErrors();
+  onSubmit() {
+    this.submitted = true;
+
+    if (this.form.valid) {
+      const filter: Filter = this.form.value;
+      console.log('Submitting filter:', filter);
+      this.submitForm.emit(filter);
+    } else {
+      console.warn('Form invalid:', this.form.errors);
+    }
+  }
+
+  operators(type: FilterConditionType): readonly TitleOperator[] | readonly AmountOperator[] | readonly DateOperator[] {
+    switch (type) {
+      case 'amount':
+        return amountOperators;
+      case 'title':
+        return titleOperators;
+      case 'date':
+        return dateOperators;
+      default:
+        throw new Error(`Unsupported condition type: ${type}`);
     }
   }
 }

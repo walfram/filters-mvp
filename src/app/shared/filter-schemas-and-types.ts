@@ -1,30 +1,33 @@
 import {z} from 'zod';
 import {v4} from 'uuid';
 
+export const amountOperators = ['>', '>=', '=', '<=', '<'] as const;
+export type AmountOperator = typeof amountOperators[number];
 export const AmountConditionSchema = z.object({
   type: z.literal('amount'),
-  operator: z.enum(['>', '>=', '=', '<=', '<']),
+  operator: z.enum(amountOperators),
   value: z.number(),
 });
-export const amountOperators = AmountConditionSchema.shape.operator.options;
 
+export const titleOperators = ['startsWith', 'endsWith', 'contains', 'equals'] as const;
+export type TitleOperator = typeof titleOperators[number];
 export const TitleConditionSchema = z.object({
   type: z.literal('title'),
-  operator: z.enum(['startsWith', 'contains', 'equals']),
+  operator: z.enum(titleOperators),
   value: z.string().min(1, 'Value is required'),
 });
-export const titleOperators = TitleConditionSchema.shape.operator.options;
 
+export const dateOperators = ['before', 'after', 'on'] as const;
+export type DateOperator = typeof dateOperators[number];
 export const DateConditionSchema = z.object({
   type: z.literal('date'),
-  operator: z.enum(['before', 'after', 'on']),
+  operator: z.enum(dateOperators),
   value: z
     .string()
     .refine((val) => !isNaN(Date.parse(val)), {
       message: 'Invalid ISO date string',
     }),
 });
-export const dateOperators = DateConditionSchema.shape.operator.options;
 
 export type AmountCondition = z.infer<typeof AmountConditionSchema>;
 export type TitleCondition = z.infer<typeof TitleConditionSchema>;

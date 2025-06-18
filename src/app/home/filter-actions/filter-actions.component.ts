@@ -18,8 +18,8 @@ import {Filter, newEmptyFilter} from '../../shared/filter-schemas-and-types';
 })
 export class FilterActionsComponent {
   constructor(
-    private dialog: MatDialog,
-    private router: Router
+    private readonly dialog: MatDialog,
+    private readonly router: Router
   ) {
   }
 
@@ -30,9 +30,8 @@ export class FilterActionsComponent {
 
   openAddFilterDialog() {
     const dialogRef = this.dialog.open<AddFilterComponent, Filter, Filter>(AddFilterComponent, {
-      width: '600px',
-      minHeight: '600px',
-      maxHeight: '90vw',
+      width: '80vw',
+      maxWidth: '100vw',
       data: {
         ...newEmptyFilter()
       },
