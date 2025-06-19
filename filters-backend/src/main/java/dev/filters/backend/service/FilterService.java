@@ -14,9 +14,10 @@ public class FilterService {
 
   private final List<FilterEntity> filters = new ArrayList<>();
 
-  public Optional<FilterEntity> findById(UUID id) {
+  public Optional<FilterDto> findById(UUID id) {
     return filters.stream()
         .filter(f -> f.getId().equals(id))
+        .map(FilterEntity::dto)
         .findFirst();
   }
 

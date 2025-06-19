@@ -5,6 +5,7 @@ import dev.filters.backend.dto.AmountCondition;
 import dev.filters.backend.dto.DateCondition;
 import dev.filters.backend.dto.FilterDto;
 import dev.filters.backend.dto.TitleCondition;
+import dev.filters.backend.entity.FilterEntity;
 import dev.filters.backend.service.FilterService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.test.json.JsonCompareMode;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -24,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @WebMvcTest(FilterController.class)
 public class FilterControllerTest {
@@ -290,4 +293,116 @@ public class FilterControllerTest {
             .content(invalidFilterRequest))
         .andExpect(status().isBadRequest());
   }
+
+  @Test
+  public void testGetAllFilters_ReturnsListOfFilters() throws Exception {
+    // Create test data
+    FilterDto filter1 = new FilterDto(
+        UUID.randomUUID(),
+        "First Filter",
+        List.of(
+            new TitleCondition(TitleCondition.TitleOperator.CONTAINS, "test")
+        ),
+        true
+    );
+    
+    FilterDto filter2 = new FilterDto(
+        UUID.randomUUID(),
+        "Second Filter",
+        List.of(
+            new AmountCondition(AmountCondition.AmountOperator.GT, 50.0)
+        ),
+        false
+    );
+
+    List<FilterDto> expectedFilters = List.of(filter1, filter2);
+
+    // Mock the service to return the list of filters
+    when(filterService.allFilters()).thenReturn(expectedFilters);
+
+    mockMvc.perform(get("/api/filters")
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$", hasSize(2)))
+        .andExpect(jsonPath("$[0].id").exists())
+        .andExpect(jsonPath("$[0].name").value("First Filter"))
+        .andExpect(jsonPath("$[0].active").value(true))
+        .andExpect(jsonPath("$[0].conditions").isArray())
+        .andExpect(jsonPath("$[0].conditions", hasSize(1)))
+        .andExpect(jsonPath("$[0].conditions[0].type").value("title"))
+        .andExpect(jsonPath("$[0].conditions[0].operator").value("CONTAINS"))
+        .andExpect(jsonPath("$[0].conditions[0].value").value("test"))
+        .andExpect(jsonPath("$[1].id").exists())
+        .andExpect(jsonPath("$[1].name").value("Second Filter"))
+        .andExpect(jsonPath("$[1].active").value(false))
+        .andExpect(jsonPath("$[1].conditions").isArray())
+        .andExpect(jsonPath("$[1].conditions", hasSize(1)))
+        .andExpect(jsonPath("$[1].conditions[0].type").value("amount"))
+        .andExpect(jsonPath("$[1].conditions[0].operator").value("GT"))
+        .andExpect(jsonPath("$[1].conditions[0].value").value(50.0));
+  }
+
+  @Test
+  public void testGetAllFilters_EmptyList_ReturnsEmptyArray() throws Exception {
+    // Mock the service to return an empty list
+    when(filterService.allFilters()).thenReturn(List.of());
+
+    mockMvc.perform(get("/api/filters")
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$", hasSize(0)));
+  }
+
+@Test
+public void testGetFilterById_ExistingFilter_ReturnsFilter() throws Exception {
+  UUID filterId = UUID.randomUUID();
+  
+  FilterDto filterDto = new FilterDto(
+      filterId,
+      "Test Filter",
+      List.of(new TitleCondition(TitleCondition.TitleOperator.CONTAINS, "test")),
+      true
+  );
+  
+  // Mock the service to return the filter entity
+  when(filterService.findById(filterId)).thenReturn(Optional.of(filterDto));
+
+  mockMvc.perform(get("/api/filters/" + filterId)
+          .contentType(MediaType.APPLICATION_JSON))
+      .andExpect(status().isOk())
+      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+      .andExpect(jsonPath("$.id").value(filterId.toString()))
+      .andExpect(jsonPath("$.name").value("Test Filter"))
+      .andExpect(jsonPath("$.active").value(true))
+      .andExpect(jsonPath("$.conditions").isArray())
+      .andExpect(jsonPath("$.conditions", hasSize(1)))
+      .andExpect(jsonPath("$.conditions[0].type").value("title"))
+      .andExpect(jsonPath("$.conditions[0].operator").value("CONTAINS"))
+      .andExpect(jsonPath("$.conditions[0].value").value("test"));
+}
+
+@Test
+public void testGetFilterById_NonExistentFilter_ReturnsNotFound() throws Exception {
+  UUID nonExistentId = UUID.randomUUID();
+  
+  // Mock the service to return empty Optional
+  when(filterService.findById(nonExistentId)).thenReturn(Optional.empty());
+
+  mockMvc.perform(get("/api/filters/" + nonExistentId)
+          .contentType(MediaType.APPLICATION_JSON))
+      .andExpect(status().isNotFound());
+}
+
+@Test
+public void testGetFilterById_InvalidUUID_ReturnsBadRequest() throws Exception {
+  String invalidUUID = "invalid-uuid";
+
+  mockMvc.perform(get("/api/filters/" + invalidUUID)
+          .contentType(MediaType.APPLICATION_JSON))
+      .andExpect(status().isBadRequest());
+}
 }

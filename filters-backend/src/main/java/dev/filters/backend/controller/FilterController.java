@@ -30,10 +30,9 @@ public class FilterController {
 
   @GetMapping("/{id}")
   public ResponseEntity<FilterDto> getFilterById(@PathVariable UUID id) {
-    Optional<FilterEntity> filter = filterService.findById(id);
+    Optional<FilterDto> filter = filterService.findById(id);
 
     return filter
-        .map(FilterEntity::dto)
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
   }
