@@ -5,7 +5,6 @@ import dev.filters.backend.dto.AmountCondition;
 import dev.filters.backend.dto.DateCondition;
 import dev.filters.backend.dto.FilterDto;
 import dev.filters.backend.dto.TitleCondition;
-import dev.filters.backend.entity.FilterEntity;
 import dev.filters.backend.service.FilterService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

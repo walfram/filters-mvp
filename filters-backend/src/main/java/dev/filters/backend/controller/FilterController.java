@@ -1,7 +1,6 @@
 package dev.filters.backend.controller;
 
 import dev.filters.backend.dto.FilterDto;
-import dev.filters.backend.entity.FilterEntity;
 import dev.filters.backend.service.FilterNotFoundException;
 import dev.filters.backend.service.FilterService;
 import jakarta.validation.Valid;
