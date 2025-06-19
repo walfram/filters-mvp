@@ -20,16 +20,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.never;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(FilterController.class)
@@ -413,7 +406,7 @@ public class FilterControllerTest {
   @Test
   public void testUpdateFilter_ValidInput_ReturnsUpdatedFilter() throws Exception {
     UUID filterId = UUID.randomUUID();
-    
+
     // Updated filter data - everything changed except ID
     FilterDto updateFilterDto = new FilterDto(
         filterId, // Same ID as path parameter
@@ -454,20 +447,20 @@ public class FilterControllerTest {
         .andExpect(jsonPath("$.conditions[2].type").value("date"))
         .andExpect(jsonPath("$.conditions[2].operator").value("AFTER"))
         .andExpect(jsonPath("$.conditions[2].value").value("2023-06-01T00:00:00"));
-    
+
     // Verify that the service was called with the correct parameters
-    verify(filterService).update(eq(filterId), argThat(dto -> 
+    verify(filterService).update(eq(filterId), argThat(dto ->
         dto.getId().equals(filterId) &&
-        dto.getName().equals("Updated Filter Name") &&
-        dto.getActive().equals(false) &&
-        dto.getConditions().size() == 3
+            dto.getName().equals("Updated Filter Name") &&
+            dto.getActive().equals(false) &&
+            dto.getConditions().size() == 3
     ));
   }
 
   @Test
   public void testUpdateFilter_NonExistentFilter_ReturnsNotFound() throws Exception {
     UUID nonExistentId = UUID.randomUUID();
-    
+
     FilterDto updateFilterDto = new FilterDto(
         nonExistentId,
         "Non-existent Filter",
@@ -490,7 +483,7 @@ public class FilterControllerTest {
   @Test
   public void testUpdateFilter_InvalidInput_MissingName_ReturnsBadRequest() throws Exception {
     UUID filterId = UUID.randomUUID();
-    
+
     String invalidUpdateRequest = """
         {
             "id": "%s",
@@ -508,7 +501,7 @@ public class FilterControllerTest {
   @Test
   public void testUpdateFilter_InvalidInput_EmptyConditions_ReturnsBadRequest() throws Exception {
     UUID filterId = UUID.randomUUID();
-    
+
     String invalidUpdateRequest = """
         {
             "id": "%s",
@@ -527,7 +520,7 @@ public class FilterControllerTest {
   @Test
   public void testUpdateFilter_InvalidUUID_ReturnsBadRequest() throws Exception {
     String invalidUUID = "invalid-uuid";
-    
+
     FilterDto updateFilterDto = new FilterDto(
         UUID.randomUUID(),
         "Test Filter",
@@ -546,7 +539,7 @@ public class FilterControllerTest {
   @Test
   public void testUpdateFilter_InvalidCondition_AmountTypeWithDateOperator_ReturnsBadRequest() throws Exception {
     UUID filterId = UUID.randomUUID();
-    
+
     String invalidUpdateRequest = """
         {
             "id": "%s",
@@ -620,5 +613,38 @@ public class FilterControllerTest {
 
     // Verify that the service was never called
     verify(filterService, never()).deleteById(any(UUID.class));
+  }
+
+  @Test
+  public void testCreateFilter_EmptyBody_ReturnsBadRequest() throws Exception {
+    // An empty JSON body should trigger validation errors for missing fields
+    mockMvc.perform(post("/api/filters")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{}"))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  public void testCreateFilter_UnknownJsonFields_ReturnsGoodRequest() throws Exception {
+    // This payload includes an extra field "someUnknownField"
+    String filterWithUnknownField = """
+        {
+            "name": "Filter with unknown fields",
+            "conditions": [
+                {
+                    "type": "title",
+                    "operator": "CONTAINS",
+                    "value": "test"
+                }
+            ],
+            "active": true,
+            "someUnknownField": "someValue"
+        }
+        """;
+
+    mockMvc.perform(post("/api/filters")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(filterWithUnknownField))
+        .andExpect(status().isOk());
   }
 }
