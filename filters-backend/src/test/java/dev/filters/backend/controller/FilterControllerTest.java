@@ -18,14 +18,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(FilterController.class)
 public class FilterControllerTest {
@@ -304,7 +302,7 @@ public class FilterControllerTest {
         ),
         true
     );
-    
+
     FilterDto filter2 = new FilterDto(
         UUID.randomUUID(),
         "Second Filter",
@@ -356,52 +354,52 @@ public class FilterControllerTest {
         .andExpect(jsonPath("$", hasSize(0)));
   }
 
-@Test
-public void testGetFilterById_ExistingFilter_ReturnsFilter() throws Exception {
-  UUID filterId = UUID.randomUUID();
-  
-  FilterDto filterDto = new FilterDto(
-      filterId,
-      "Test Filter",
-      List.of(new TitleCondition(TitleCondition.TitleOperator.CONTAINS, "test")),
-      true
-  );
-  
-  // Mock the service to return the filter entity
-  when(filterService.findById(filterId)).thenReturn(Optional.of(filterDto));
+  @Test
+  public void testGetFilterById_ExistingFilter_ReturnsFilter() throws Exception {
+    UUID filterId = UUID.randomUUID();
 
-  mockMvc.perform(get("/api/filters/" + filterId)
-          .contentType(MediaType.APPLICATION_JSON))
-      .andExpect(status().isOk())
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-      .andExpect(jsonPath("$.id").value(filterId.toString()))
-      .andExpect(jsonPath("$.name").value("Test Filter"))
-      .andExpect(jsonPath("$.active").value(true))
-      .andExpect(jsonPath("$.conditions").isArray())
-      .andExpect(jsonPath("$.conditions", hasSize(1)))
-      .andExpect(jsonPath("$.conditions[0].type").value("title"))
-      .andExpect(jsonPath("$.conditions[0].operator").value("CONTAINS"))
-      .andExpect(jsonPath("$.conditions[0].value").value("test"));
-}
+    FilterDto filterDto = new FilterDto(
+        filterId,
+        "Test Filter",
+        List.of(new TitleCondition(TitleCondition.TitleOperator.CONTAINS, "test")),
+        true
+    );
 
-@Test
-public void testGetFilterById_NonExistentFilter_ReturnsNotFound() throws Exception {
-  UUID nonExistentId = UUID.randomUUID();
-  
-  // Mock the service to return empty Optional
-  when(filterService.findById(nonExistentId)).thenReturn(Optional.empty());
+    // Mock the service to return the filter entity
+    when(filterService.findById(filterId)).thenReturn(Optional.of(filterDto));
 
-  mockMvc.perform(get("/api/filters/" + nonExistentId)
-          .contentType(MediaType.APPLICATION_JSON))
-      .andExpect(status().isNotFound());
-}
+    mockMvc.perform(get("/api/filters/" + filterId)
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.id").value(filterId.toString()))
+        .andExpect(jsonPath("$.name").value("Test Filter"))
+        .andExpect(jsonPath("$.active").value(true))
+        .andExpect(jsonPath("$.conditions").isArray())
+        .andExpect(jsonPath("$.conditions", hasSize(1)))
+        .andExpect(jsonPath("$.conditions[0].type").value("title"))
+        .andExpect(jsonPath("$.conditions[0].operator").value("CONTAINS"))
+        .andExpect(jsonPath("$.conditions[0].value").value("test"));
+  }
 
-@Test
-public void testGetFilterById_InvalidUUID_ReturnsBadRequest() throws Exception {
-  String invalidUUID = "invalid-uuid";
+  @Test
+  public void testGetFilterById_NonExistentFilter_ReturnsNotFound() throws Exception {
+    UUID nonExistentId = UUID.randomUUID();
 
-  mockMvc.perform(get("/api/filters/" + invalidUUID)
-          .contentType(MediaType.APPLICATION_JSON))
-      .andExpect(status().isBadRequest());
-}
+    // Mock the service to return empty Optional
+    when(filterService.findById(nonExistentId)).thenReturn(Optional.empty());
+
+    mockMvc.perform(get("/api/filters/" + nonExistentId)
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  public void testGetFilterById_InvalidUUID_ReturnsBadRequest() throws Exception {
+    String invalidUUID = "invalid-uuid";
+
+    mockMvc.perform(get("/api/filters/" + invalidUUID)
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest());
+  }
 }
