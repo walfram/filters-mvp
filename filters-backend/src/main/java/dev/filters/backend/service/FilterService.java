@@ -21,8 +21,9 @@ public class FilterService {
   }
 
   public FilterDto create(FilterDto filterDto) {
-    filters.add(filterDto.entity(UUID.randomUUID()));
-    return filterDto;
+    FilterEntity created = filterDto.entity(UUID.randomUUID());
+    filters.add(created);
+    return created.dto();
   }
 
   public FilterDto update(UUID id, FilterDto filterDto) throws FilterNotFoundException {
