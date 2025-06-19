@@ -25,9 +25,11 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(FilterController.class)
@@ -564,5 +566,59 @@ public class FilterControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(invalidUpdateRequest))
         .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  public void testDeleteFilter_ExistingFilter_ReturnsNoContent() throws Exception {
+    UUID filterId = UUID.randomUUID();
+
+    // Mock the service to return true (filter was successfully deleted)
+    when(filterService.deleteById(filterId)).thenReturn(true);
+
+    mockMvc.perform(delete("/api/filters/" + filterId)
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNoContent())
+        .andExpect(content().string(""));
+
+    // Verify that the service was called with the correct ID
+    verify(filterService).deleteById(filterId);
+  }
+
+  @Test
+  public void testDeleteFilter_NonExistentFilter_ReturnsNotFound() throws Exception {
+    UUID nonExistentId = UUID.randomUUID();
+
+    // Mock the service to return false (filter was not found)
+    when(filterService.deleteById(nonExistentId)).thenReturn(false);
+
+    mockMvc.perform(delete("/api/filters/" + nonExistentId)
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound())
+        .andExpect(content().string(""));
+
+    // Verify that the service was called with the correct ID
+    verify(filterService).deleteById(nonExistentId);
+  }
+
+  @Test
+  public void testDeleteFilter_InvalidUUID_ReturnsBadRequest() throws Exception {
+    String invalidUUID = "invalid-uuid";
+
+    mockMvc.perform(delete("/api/filters/" + invalidUUID)
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest());
+
+    // Verify that the service was never called due to invalid UUID
+    verify(filterService, never()).deleteById(any(UUID.class));
+  }
+
+  @Test
+  public void testDeleteFilter_EmptyId_ReturnsNotFound() throws Exception {
+    mockMvc.perform(delete("/api/filters/")
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound());
+
+    // Verify that the service was never called
+    verify(filterService, never()).deleteById(any(UUID.class));
   }
 }
