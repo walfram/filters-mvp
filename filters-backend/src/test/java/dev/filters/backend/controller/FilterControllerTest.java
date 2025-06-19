@@ -22,6 +22,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.hamcrest.Matchers.hasSize;
 
 @WebMvcTest(FilterController.class)
 public class FilterControllerTest {
@@ -58,6 +60,21 @@ public class FilterControllerTest {
             .content(validFilterRequest))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.id").exists())
+        .andExpect(jsonPath("$.id").isNotEmpty())
+        .andExpect(jsonPath("$.name").value("Test Filter"))
+        .andExpect(jsonPath("$.active").value(true))
+        .andExpect(jsonPath("$.conditions").isArray())
+        .andExpect(jsonPath("$.conditions", hasSize(3)))
+        .andExpect(jsonPath("$.conditions[0].type").value("title"))
+        .andExpect(jsonPath("$.conditions[0].operator").value("STARTS_WITH"))
+        .andExpect(jsonPath("$.conditions[0].value").value("Test"))
+        .andExpect(jsonPath("$.conditions[1].type").value("amount"))
+        .andExpect(jsonPath("$.conditions[1].operator").value("EQ"))
+        .andExpect(jsonPath("$.conditions[1].value").value(100.00))
+        .andExpect(jsonPath("$.conditions[2].type").value("date"))
+        .andExpect(jsonPath("$.conditions[2].operator").value("BEFORE"))
+        .andExpect(jsonPath("$.conditions[2].value").value("2022-01-01T00:00:00"))
         .andExpect(content().json(validFilterRequest, JsonCompareMode.STRICT));
   }
 
