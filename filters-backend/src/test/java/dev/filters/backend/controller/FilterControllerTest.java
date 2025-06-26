@@ -46,7 +46,7 @@ public class FilterControllerTest {
         List.of(
             new TitleConditionDTO(TitleOperator.STARTS_WITH, "Test"),
             new AmountConditionDTO(AmountOperator.EQ, 100.00),
-            new DateConditionDTO(DateOperator.BEFORE, "2022-01-01T00:00:00Z")
+            new DateConditionDTO(DateOperator.BEFORE, "2022-01-01")
         ),
         true
     );
@@ -68,14 +68,14 @@ public class FilterControllerTest {
         .andExpect(jsonPath("$.conditions").isArray())
         .andExpect(jsonPath("$.conditions", hasSize(3)))
         .andExpect(jsonPath("$.conditions[0].type").value("title"))
-        .andExpect(jsonPath("$.conditions[0].operator").value("STARTS_WITH"))
+        .andExpect(jsonPath("$.conditions[0].operator").value("startsWith"))
         .andExpect(jsonPath("$.conditions[0].value").value("Test"))
         .andExpect(jsonPath("$.conditions[1].type").value("amount"))
-        .andExpect(jsonPath("$.conditions[1].operator").value("EQ"))
+        .andExpect(jsonPath("$.conditions[1].operator").value("="))
         .andExpect(jsonPath("$.conditions[1].value").value(100.00))
         .andExpect(jsonPath("$.conditions[2].type").value("date"))
-        .andExpect(jsonPath("$.conditions[2].operator").value("BEFORE"))
-        .andExpect(jsonPath("$.conditions[2].value").value("2022-01-01T00:00:00"))
+        .andExpect(jsonPath("$.conditions[2].operator").value("before"))
+        .andExpect(jsonPath("$.conditions[2].value").value("2022-01-01"))
         .andExpect(content().json(validFilterRequest, JsonCompareMode.STRICT));
   }
 
@@ -330,7 +330,7 @@ public class FilterControllerTest {
         .andExpect(jsonPath("$[0].conditions").isArray())
         .andExpect(jsonPath("$[0].conditions", hasSize(1)))
         .andExpect(jsonPath("$[0].conditions[0].type").value("title"))
-        .andExpect(jsonPath("$[0].conditions[0].operator").value("CONTAINS"))
+        .andExpect(jsonPath("$[0].conditions[0].operator").value("contains"))
         .andExpect(jsonPath("$[0].conditions[0].value").value("test"))
         .andExpect(jsonPath("$[1].id").exists())
         .andExpect(jsonPath("$[1].name").value("Second Filter"))
@@ -338,7 +338,7 @@ public class FilterControllerTest {
         .andExpect(jsonPath("$[1].conditions").isArray())
         .andExpect(jsonPath("$[1].conditions", hasSize(1)))
         .andExpect(jsonPath("$[1].conditions[0].type").value("amount"))
-        .andExpect(jsonPath("$[1].conditions[0].operator").value("GT"))
+        .andExpect(jsonPath("$[1].conditions[0].operator").value(">"))
         .andExpect(jsonPath("$[1].conditions[0].value").value(50.0));
   }
 
@@ -379,7 +379,7 @@ public class FilterControllerTest {
         .andExpect(jsonPath("$.conditions").isArray())
         .andExpect(jsonPath("$.conditions", hasSize(1)))
         .andExpect(jsonPath("$.conditions[0].type").value("title"))
-        .andExpect(jsonPath("$.conditions[0].operator").value("CONTAINS"))
+        .andExpect(jsonPath("$.conditions[0].operator").value("contains"))
         .andExpect(jsonPath("$.conditions[0].value").value("test"));
   }
 
@@ -415,7 +415,7 @@ public class FilterControllerTest {
         List.of( // New conditions
             new TitleConditionDTO(TitleOperator.ENDS_WITH, "updated"),
             new AmountConditionDTO(AmountOperator.LT, 250.0),
-            new DateConditionDTO(DateOperator.AFTER, "2023-06-01T00:00:00Z")
+            new DateConditionDTO(DateOperator.AFTER, "2023-06-01")
         ),
         false // New active status
     );
@@ -440,14 +440,14 @@ public class FilterControllerTest {
         .andExpect(jsonPath("$.conditions").isArray())
         .andExpect(jsonPath("$.conditions", hasSize(3)))
         .andExpect(jsonPath("$.conditions[0].type").value("title"))
-        .andExpect(jsonPath("$.conditions[0].operator").value("ENDS_WITH"))
+        .andExpect(jsonPath("$.conditions[0].operator").value("endsWith"))
         .andExpect(jsonPath("$.conditions[0].value").value("updated"))
         .andExpect(jsonPath("$.conditions[1].type").value("amount"))
-        .andExpect(jsonPath("$.conditions[1].operator").value("LT"))
+        .andExpect(jsonPath("$.conditions[1].operator").value("<"))
         .andExpect(jsonPath("$.conditions[1].value").value(250.0))
         .andExpect(jsonPath("$.conditions[2].type").value("date"))
-        .andExpect(jsonPath("$.conditions[2].operator").value("AFTER"))
-        .andExpect(jsonPath("$.conditions[2].value").value("2023-06-01T00:00:00"));
+        .andExpect(jsonPath("$.conditions[2].operator").value("after"))
+        .andExpect(jsonPath("$.conditions[2].value").value("2023-06-01"));
 
     // Verify that the service was called with the correct parameters
     verify(filterService).update(eq(filterId), argThat(dto ->
@@ -626,7 +626,7 @@ public class FilterControllerTest {
   }
 
   @Test
-  public void testCreateFilter_UnknownJsonFields_ReturnsGoodRequest() throws Exception {
+  public void testCreateFilter_UnknownJsonFields_ReturnsBadRequest() throws Exception {
     // This payload includes an extra field "someUnknownField"
     String filterWithUnknownField = """
         {
@@ -646,6 +646,6 @@ public class FilterControllerTest {
     mockMvc.perform(post("/api/filters")
             .contentType(MediaType.APPLICATION_JSON)
             .content(filterWithUnknownField))
-        .andExpect(status().isOk());
+        .andExpect(status().isBadRequest());
   }
 }
