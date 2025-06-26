@@ -104,13 +104,15 @@ export class FilterFormComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
 
-    if (this.form.valid) {
-      const filter: Filter = this.form.value;
-      console.log('Submitting filter:', filter);
-      this.submitForm.emit(filter);
-    } else {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched(); 
       console.warn('Form invalid:', this.form.errors);
+      return;
     }
+
+    const filter: Filter = this.form.value;
+    console.log('Submitting filter:', filter);
+    this.submitForm.emit(filter);
   }
 
   operators(type: FilterConditionType): readonly TitleOperator[] | readonly AmountOperator[] | readonly DateOperator[] {

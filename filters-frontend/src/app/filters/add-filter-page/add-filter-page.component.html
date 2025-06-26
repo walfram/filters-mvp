@@ -1,0 +1,11 @@
+<h3>Add Filter</h3>
+<app-filter-form
+  #filterForm
+  [filterData]="filter"
+  (submitForm)="onFormSubmit($event)"
+></app-filter-form>
+
+<div style="margin-top: 16px; display: flex; gap: 8px; justify-content: flex-end;">
+  <button mat-stroked-button type="button" (click)="onCancel()">Cancel</button>
+  <button mat-flat-button color="primary" type="button" (click)="filterForm.onSubmit()">Save</button>
+</div>
