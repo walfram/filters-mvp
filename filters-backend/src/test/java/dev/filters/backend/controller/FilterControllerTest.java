@@ -1,10 +1,7 @@
 package dev.filters.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.filters.backend.dto.AmountCondition;
-import dev.filters.backend.dto.DateCondition;
-import dev.filters.backend.dto.FilterDto;
-import dev.filters.backend.dto.TitleCondition;
+import dev.filters.backend.dto.*;
 import dev.filters.backend.service.FilterNotFoundException;
 import dev.filters.backend.service.FilterService;
 import org.junit.jupiter.api.Test;
@@ -15,6 +12,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.json.JsonCompareMode;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -39,21 +37,21 @@ public class FilterControllerTest {
 
   @Test
   public void testCreateFilter_ValidInput_ReturnsOk() throws Exception {
-    FilterDto validFilterDto = new FilterDto(
+    FilterDTO validFilterDTO = new FilterDTO(
         UUID.randomUUID(),
         "Test Filter",
         List.of(
-            new TitleCondition(TitleCondition.TitleOperator.STARTS_WITH, "Test"),
-            new AmountCondition(AmountCondition.AmountOperator.EQ, 100.00),
-            new DateCondition(DateCondition.DateOperator.BEFORE, "2022-01-01T00:00:00")
+            new TitleConditionDTO(TitleOperator.STARTS_WITH, "Test"),
+            new AmountConditionDTO(AmountOperator.EQ, 100.00),
+            new DateConditionDTO(DateOperator.BEFORE, Instant.parse("2022-01-01T00:00:00Z"))
         ),
         true
     );
 
     // Mock the service to return the same DTO when create is called
-    when(filterService.create(any(FilterDto.class))).thenReturn(validFilterDto);
+    when(filterService.create(any(FilterDTO.class))).thenReturn(validFilterDTO);
 
-    String validFilterRequest = objectMapper.writeValueAsString(validFilterDto);
+    String validFilterRequest = objectMapper.writeValueAsString(validFilterDTO);
 
     mockMvc.perform(post("/api/filters")
             .contentType(MediaType.APPLICATION_JSON)
@@ -74,7 +72,7 @@ public class FilterControllerTest {
         .andExpect(jsonPath("$.conditions[1].value").value(100.00))
         .andExpect(jsonPath("$.conditions[2].type").value("date"))
         .andExpect(jsonPath("$.conditions[2].operator").value("BEFORE"))
-        .andExpect(jsonPath("$.conditions[2].value").value("2022-01-01T00:00:00"))
+        .andExpect(jsonPath("$.conditions[2].value").value("2022-01-01T00:00:00Z"))
         .andExpect(content().json(validFilterRequest, JsonCompareMode.STRICT));
   }
 
@@ -294,25 +292,25 @@ public class FilterControllerTest {
   @Test
   public void testGetAllFilters_ReturnsListOfFilters() throws Exception {
     // Create test data
-    FilterDto filter1 = new FilterDto(
+    FilterDTO filter1 = new FilterDTO(
         UUID.randomUUID(),
         "First Filter",
         List.of(
-            new TitleCondition(TitleCondition.TitleOperator.CONTAINS, "test")
+            new TitleConditionDTO(TitleOperator.CONTAINS, "test")
         ),
         true
     );
 
-    FilterDto filter2 = new FilterDto(
+    FilterDTO filter2 = new FilterDTO(
         UUID.randomUUID(),
         "Second Filter",
         List.of(
-            new AmountCondition(AmountCondition.AmountOperator.GT, 50.0)
+            new AmountConditionDTO(AmountOperator.GT, 50.0)
         ),
         false
     );
 
-    List<FilterDto> expectedFilters = List.of(filter1, filter2);
+    List<FilterDTO> expectedFilters = List.of(filter1, filter2);
 
     // Mock the service to return the list of filters
     when(filterService.allFilters()).thenReturn(expectedFilters);
@@ -358,15 +356,15 @@ public class FilterControllerTest {
   public void testGetFilterById_ExistingFilter_ReturnsFilter() throws Exception {
     UUID filterId = UUID.randomUUID();
 
-    FilterDto filterDto = new FilterDto(
+    FilterDTO FilterDTO = new FilterDTO(
         filterId,
         "Test Filter",
-        List.of(new TitleCondition(TitleCondition.TitleOperator.CONTAINS, "test")),
+        List.of(new TitleConditionDTO(TitleOperator.CONTAINS, "test")),
         true
     );
 
     // Mock the service to return the filter entity
-    when(filterService.findById(filterId)).thenReturn(Optional.of(filterDto));
+    when(filterService.findById(filterId)).thenReturn(Optional.of(FilterDTO));
 
     mockMvc.perform(get("/api/filters/" + filterId)
             .contentType(MediaType.APPLICATION_JSON))
@@ -408,21 +406,21 @@ public class FilterControllerTest {
     UUID filterId = UUID.randomUUID();
 
     // Updated filter data - everything changed except ID
-    FilterDto updateFilterDto = new FilterDto(
+    FilterDTO updateFilterDTO = new FilterDTO(
         filterId, // Same ID as path parameter
         "Updated Filter Name", // New name
         List.of( // New conditions
-            new TitleCondition(TitleCondition.TitleOperator.ENDS_WITH, "updated"),
-            new AmountCondition(AmountCondition.AmountOperator.LT, 250.0),
-            new DateCondition(DateCondition.DateOperator.AFTER, "2023-06-01T00:00:00")
+            new TitleConditionDTO(TitleOperator.ENDS_WITH, "updated"),
+            new AmountConditionDTO(AmountOperator.LT, 250.0),
+            new DateConditionDTO(DateOperator.AFTER, Instant.parse("2023-06-01T00:00:00Z"))
         ),
         false // New active status
     );
 
     // Mock the service to return the updated DTO
-    when(filterService.update(eq(filterId), any(FilterDto.class))).thenReturn(updateFilterDto);
+    when(filterService.update(eq(filterId), any(FilterDTO.class))).thenReturn(updateFilterDTO);
 
-    String updateFilterRequest = objectMapper.writeValueAsString(updateFilterDto);
+    String updateFilterRequest = objectMapper.writeValueAsString(updateFilterDTO);
 
     mockMvc.perform(put("/api/filters/" + filterId)
             .contentType(MediaType.APPLICATION_JSON)
@@ -446,7 +444,7 @@ public class FilterControllerTest {
         .andExpect(jsonPath("$.conditions[1].value").value(250.0))
         .andExpect(jsonPath("$.conditions[2].type").value("date"))
         .andExpect(jsonPath("$.conditions[2].operator").value("AFTER"))
-        .andExpect(jsonPath("$.conditions[2].value").value("2023-06-01T00:00:00"));
+        .andExpect(jsonPath("$.conditions[2].value").value("2023-06-01T00:00:00Z"));
 
     // Verify that the service was called with the correct parameters
     verify(filterService).update(eq(filterId), argThat(dto ->
@@ -461,18 +459,18 @@ public class FilterControllerTest {
   public void testUpdateFilter_NonExistentFilter_ReturnsNotFound() throws Exception {
     UUID nonExistentId = UUID.randomUUID();
 
-    FilterDto updateFilterDto = new FilterDto(
+    FilterDTO updateFilterDTO = new FilterDTO(
         nonExistentId,
         "Non-existent Filter",
-        List.of(new TitleCondition(TitleCondition.TitleOperator.CONTAINS, "test")),
+        List.of(new TitleConditionDTO(TitleOperator.CONTAINS, "test")),
         true
     );
 
     // Mock the service to throw FilterNotFoundException
-    when(filterService.update(eq(nonExistentId), any(FilterDto.class)))
+    when(filterService.update(eq(nonExistentId), any(FilterDTO.class)))
         .thenThrow(new FilterNotFoundException("Filter not found"));
 
-    String updateFilterRequest = objectMapper.writeValueAsString(updateFilterDto);
+    String updateFilterRequest = objectMapper.writeValueAsString(updateFilterDTO);
 
     mockMvc.perform(put("/api/filters/" + nonExistentId)
             .contentType(MediaType.APPLICATION_JSON)
@@ -521,14 +519,14 @@ public class FilterControllerTest {
   public void testUpdateFilter_InvalidUUID_ReturnsBadRequest() throws Exception {
     String invalidUUID = "invalid-uuid";
 
-    FilterDto updateFilterDto = new FilterDto(
+    FilterDTO updateFilterDTO = new FilterDTO(
         UUID.randomUUID(),
         "Test Filter",
-        List.of(new TitleCondition(TitleCondition.TitleOperator.CONTAINS, "test")),
+        List.of(new TitleConditionDTO(TitleOperator.CONTAINS, "test")),
         true
     );
 
-    String updateFilterRequest = objectMapper.writeValueAsString(updateFilterDto);
+    String updateFilterRequest = objectMapper.writeValueAsString(updateFilterDTO);
 
     mockMvc.perform(put("/api/filters/" + invalidUUID)
             .contentType(MediaType.APPLICATION_JSON)

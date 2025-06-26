@@ -1,53 +1,68 @@
 package dev.filters.backend.service;
 
-import dev.filters.backend.dto.FilterDto;
+import dev.filters.backend.dto.FilterDTO;
 import dev.filters.backend.entity.FilterEntity;
+import dev.filters.backend.repository.FilterRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class FilterService {
 
-  private final List<FilterEntity> filters = new ArrayList<>();
+  private final FilterConverter filterConverter;
+  private final FilterRepository filterRepository;
 
-  public Optional<FilterDto> findById(UUID id) {
-    return filters.stream()
-        .filter(f -> f.getId().equals(id))
-        .map(FilterEntity::dto)
-        .findFirst();
+  @Transactional(readOnly = true)
+  public Optional<FilterDTO> findById(UUID id) {
+    return filterRepository.findById(id)
+        .map(filterConverter::toDto);
   }
 
-  public FilterDto create(FilterDto filterDto) {
-    FilterEntity created = filterDto.entity(UUID.randomUUID());
-    filters.add(created);
-    return created.dto();
+  @Transactional
+  public FilterDTO create(FilterDTO FilterDTO) {
+    FilterEntity created = filterConverter.toEntity(FilterDTO);
+    log.debug("Created filter: {}", created);
+    filterRepository.save(created);
+    return filterConverter.toDto(created);
   }
 
-  public FilterDto update(UUID id, FilterDto filterDto) throws FilterNotFoundException {
-    Optional<FilterEntity> existingFilter = filters.stream()
-        .filter(f -> f.getId().equals(id))
-        .findFirst();
+  @Transactional
+  public FilterDTO update(UUID id, FilterDTO FilterDTO) throws FilterNotFoundException {
+    Optional<FilterEntity> existingFilter = filterRepository.findById(id);
 
     if (existingFilter.isEmpty()) {
       throw new FilterNotFoundException("Filter not found");
     }
 
-    filters.removeIf(f -> f.getId().equals(id));
-    FilterEntity entity = filterDto.entity(id);
-    filters.add(entity);
+    FilterEntity entity = filterConverter.toEntity(FilterDTO);
+    filterRepository.save(entity);
 
-    return entity.dto();
+    return filterConverter.toDto(entity);
   }
 
+  @Transactional
   public boolean deleteById(UUID id) {
-    return filters.removeIf(f -> f.getId().equals(id));
+    if (filterRepository.existsById(id)) {
+      filterRepository.deleteById(id);
+      return true;
+    }
+    return false;
   }
 
-  public List<FilterDto> allFilters() {
-    return filters.stream().map(FilterEntity::dto).toList();
+  @Transactional(readOnly = true)
+  public List<FilterDTO> allFilters() {
+    return filterRepository
+      .findAll()
+      .stream()
+      .map(filterConverter::toDto)
+      .toList();
   }
 }
