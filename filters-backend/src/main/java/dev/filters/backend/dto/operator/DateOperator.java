@@ -12,4 +12,12 @@ public enum DateOperator {
     this.name = name;
   }
 
+  public static DateOperator fromSymbol(String operator) {
+    for (DateOperator op : values()) {
+      if (op.name.equals(operator)) {
+        return op;
+      }
+    }
+    throw new IllegalArgumentException("Unknown DateOperator: " + operator);
+  }
 }

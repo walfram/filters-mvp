@@ -48,9 +48,9 @@ public class FilterConverter {
     }
 
     return switch (conditionEntity.getConditionType()) {
-      case "amount" -> new AmountConditionDTO(AmountOperator.valueOf(jsonNode.path("operator").asText()), jsonNode.path("value").asDouble());
-      case "date" -> new DateConditionDTO(DateOperator.valueOf(jsonNode.path("operator").asText()), jsonNode.path("value").asText());
-      case "title" -> new TitleConditionDTO(TitleOperator.valueOf(jsonNode.path("operator").asText()), jsonNode.path("value").asText());
+      case "amount" -> new AmountConditionDTO(AmountOperator.fromSymbol(jsonNode.path("operator").asText()), jsonNode.path("value").asDouble());
+      case "date" -> new DateConditionDTO(DateOperator.fromSymbol(jsonNode.path("operator").asText()), jsonNode.path("value").asText());
+      case "title" -> new TitleConditionDTO(TitleOperator.fromSymbol(jsonNode.path("operator").asText()), jsonNode.path("value").asText());
       default
         -> throw new IllegalArgumentException("Unknown condition type: " + conditionEntity.getConditionType());
     };

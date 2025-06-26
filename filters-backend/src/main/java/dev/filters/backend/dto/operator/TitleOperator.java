@@ -12,4 +12,12 @@ public enum TitleOperator {
     this.name = name;
   }
 
+  public static TitleOperator fromSymbol(String operator) {
+    for (TitleOperator op : values()) {
+      if (op.name.equals(operator)) {
+        return op;
+      }
+    }
+    throw new IllegalArgumentException("Unknown TitleOperator: " + operator);
+  }
 }

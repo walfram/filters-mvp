@@ -12,4 +12,13 @@ public enum AmountOperator {
     this.symbol = symbol;
   }
 
+  public static AmountOperator fromSymbol(String symbol) {
+    for (AmountOperator op : values()) {
+      if (op.symbol.equals(symbol)) {
+        return op;
+      }
+    }
+    throw new IllegalArgumentException("Unknown AmountOperator: " + symbol);
+  }
+
 }

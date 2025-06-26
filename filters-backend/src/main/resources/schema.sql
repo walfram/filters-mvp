@@ -13,6 +13,6 @@ CREATE TABLE filter_conditions
     id                VARCHAR(36) PRIMARY KEY,
     filter_id         VARCHAR(36) NOT NULL,
     condition_type    VARCHAR(10) NOT NULL,
-    condition_details JSON        NOT NULL,
+    condition_details CLOB        NOT NULL,
     FOREIGN KEY (filter_id) REFERENCES filters (id) ON DELETE CASCADE
 );
