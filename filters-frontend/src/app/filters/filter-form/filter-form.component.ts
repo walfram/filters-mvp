@@ -8,7 +8,7 @@ import {
   Filter,
   FilterCondition,
   FilterConditionType,
-  FilterSchema,
+  FilterSchema, newEmptyCondition,
   TitleOperator,
   titleOperators
 } from '../../shared/filter-schemas-and-types';
@@ -74,7 +74,7 @@ export class FilterFormComponent implements OnInit {
     );
   }
 
-  createConditionForm(condition?: FilterCondition): FormGroup {
+  createConditionForm(condition?: FilterCondition) {
     console.log('createConditionForm', condition);
     return this.fb.nonNullable.group({
       type: this.fb.nonNullable.control(condition?.type ?? '', [Validators.required]),
@@ -88,7 +88,7 @@ export class FilterFormComponent implements OnInit {
   }
 
   addCondition() {
-    this.conditions.push(this.createConditionForm());
+    this.conditions.push(this.createConditionForm( newEmptyCondition("title") ));
 
     this.form.markAsUntouched();
     this.submitted = false;
@@ -123,6 +123,15 @@ export class FilterFormComponent implements OnInit {
         return dateOperators;
       default:
         throw new Error(`Unsupported condition type: ${type}`);
+    }
+  }
+
+  onFieldChange(index: number, value: string) {
+    const conditionGroup = this.conditions.at(index);
+    if (conditionGroup) {
+      conditionGroup.get('type')?.setValue(value);
+      conditionGroup.get('operator')?.reset('');
+      conditionGroup.get('value')?.reset('');
     }
   }
 }

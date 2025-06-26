@@ -19,7 +19,7 @@
 
         <mat-form-field appearance="fill" subscriptSizing="dynamic">
           <mat-label>Type</mat-label>
-          <mat-select formControlName="type">
+          <mat-select formControlName="type" (selectionChange)="onFieldChange(i, $event.value)">
             @for (type of conditionTypes; track $index) {
               <mat-option [value]="type">
                 {{ type | titlecase }}
@@ -28,14 +28,11 @@
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field appearance="fill">
+        <mat-form-field appearance="fill" subscriptSizing="dynamic">
           <mat-label>Operator</mat-label>
-          <mat-select
-            [(value)]="condition.operator"
-            (selectionChange)="onFieldChange()"
-            formArrayName="operator"
-          >
-            @let ops = operators(condition.type);
+          <mat-select formControlName="operator" (selectionChange)="onFieldChange()">
+            @let typeValue = condition.get('type')?.value;
+            @let ops = operators(typeValue);
             @for (operator of ops; track $index) {
               <mat-option [value]="operator">
                 {{ operator | titlecase }}
