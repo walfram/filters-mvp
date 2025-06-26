@@ -1,21 +1,16 @@
 package dev.filters.backend.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import dev.filters.backend.dto.operator.TitleOperator;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @AllArgsConstructor
-public class TitleConditionDTO extends FilterConditionDTO {
+@NoArgsConstructor
+public class TitleConditionDTO implements Condition {
 
-  @NotNull(message = "Title operator is required")
   private TitleOperator operator;
-
-  @NotBlank(message = "Title value is required")
   private String value;
 
-  public TitleConditionDTO() {
-    super("title");
-  }
 }

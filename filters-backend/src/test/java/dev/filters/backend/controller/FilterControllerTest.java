@@ -2,6 +2,9 @@ package dev.filters.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.filters.backend.dto.*;
+import dev.filters.backend.dto.operator.AmountOperator;
+import dev.filters.backend.dto.operator.DateOperator;
+import dev.filters.backend.dto.operator.TitleOperator;
 import dev.filters.backend.service.FilterNotFoundException;
 import dev.filters.backend.service.FilterService;
 import org.junit.jupiter.api.Test;
@@ -43,7 +46,7 @@ public class FilterControllerTest {
         List.of(
             new TitleConditionDTO(TitleOperator.STARTS_WITH, "Test"),
             new AmountConditionDTO(AmountOperator.EQ, 100.00),
-            new DateConditionDTO(DateOperator.BEFORE, Instant.parse("2022-01-01T00:00:00Z"))
+            new DateConditionDTO(DateOperator.BEFORE, "2022-01-01T00:00:00Z")
         ),
         true
     );
@@ -72,7 +75,7 @@ public class FilterControllerTest {
         .andExpect(jsonPath("$.conditions[1].value").value(100.00))
         .andExpect(jsonPath("$.conditions[2].type").value("date"))
         .andExpect(jsonPath("$.conditions[2].operator").value("BEFORE"))
-        .andExpect(jsonPath("$.conditions[2].value").value("2022-01-01T00:00:00Z"))
+        .andExpect(jsonPath("$.conditions[2].value").value("2022-01-01T00:00:00"))
         .andExpect(content().json(validFilterRequest, JsonCompareMode.STRICT));
   }
 
@@ -412,7 +415,7 @@ public class FilterControllerTest {
         List.of( // New conditions
             new TitleConditionDTO(TitleOperator.ENDS_WITH, "updated"),
             new AmountConditionDTO(AmountOperator.LT, 250.0),
-            new DateConditionDTO(DateOperator.AFTER, Instant.parse("2023-06-01T00:00:00Z"))
+            new DateConditionDTO(DateOperator.AFTER, "2023-06-01T00:00:00Z")
         ),
         false // New active status
     );
@@ -444,7 +447,7 @@ public class FilterControllerTest {
         .andExpect(jsonPath("$.conditions[1].value").value(250.0))
         .andExpect(jsonPath("$.conditions[2].type").value("date"))
         .andExpect(jsonPath("$.conditions[2].operator").value("AFTER"))
-        .andExpect(jsonPath("$.conditions[2].value").value("2023-06-01T00:00:00Z"));
+        .andExpect(jsonPath("$.conditions[2].value").value("2023-06-01T00:00:00"));
 
     // Verify that the service was called with the correct parameters
     verify(filterService).update(eq(filterId), argThat(dto ->

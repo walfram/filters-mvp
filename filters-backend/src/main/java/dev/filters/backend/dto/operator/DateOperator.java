@@ -1,5 +1,8 @@
-package dev.filters.backend.dto;
+package dev.filters.backend.dto.operator;
 
+import lombok.Getter;
+
+@Getter
 public enum DateOperator {
   BEFORE("before"), AFTER("after"), ON("on");
 
@@ -9,7 +12,4 @@ public enum DateOperator {
     this.name = name;
   }
 
-  public String getName() {
-    return name;
-  }
 }

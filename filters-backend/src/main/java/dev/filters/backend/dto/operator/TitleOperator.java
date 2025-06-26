@@ -1,5 +1,8 @@
-package dev.filters.backend.dto;
+package dev.filters.backend.dto.operator;
 
+import lombok.Getter;
+
+@Getter
 public enum TitleOperator {
   STARTS_WITH("startsWith"), ENDS_WITH("endsWith"), CONTAINS("contains"), EQUALS("equals");
 
@@ -9,7 +12,4 @@ public enum TitleOperator {
     this.name = name;
   }
 
-  public String getName() {
-    return name;
-  }
 }

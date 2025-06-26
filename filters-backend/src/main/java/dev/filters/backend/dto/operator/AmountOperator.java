@@ -1,5 +1,8 @@
-package dev.filters.backend.dto;
+package dev.filters.backend.dto.operator;
 
+import lombok.Getter;
+
+@Getter
 public enum AmountOperator {
   GT(">"), GTE(">="), EQ("="), LTE("<="), LT("<");
 
@@ -9,7 +12,4 @@ public enum AmountOperator {
     this.symbol = symbol;
   }
 
-  public String getSymbol() {
-    return symbol;
-  }
 }

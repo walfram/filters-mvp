@@ -1,22 +1,24 @@
 package dev.filters.backend.dto;
 
-import jakarta.validation.constraints.NotNull;
+import dev.filters.backend.dto.operator.DateOperator;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
-@Getter
+@Data
 @AllArgsConstructor
-public class DateConditionDTO extends FilterConditionDTO {
+@NoArgsConstructor
+public class DateConditionDTO implements Condition {
 
-  @NotNull(message = "Date operator is required")
-  private DateOperator operator;
+  DateOperator operator;
+  LocalDateTime value;
 
-  @NotNull(message = "Date value is required")
-  private Instant value;
-
-  public DateConditionDTO() {
-    super("date");
+  public DateConditionDTO(DateOperator operator, String value) {
+    this(operator, Instant.parse(value).atZone(ZoneId.of("UTC")).toLocalDateTime());
   }
+
 }

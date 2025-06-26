@@ -1,21 +1,16 @@
 package dev.filters.backend.dto;
 
-import jakarta.validation.constraints.NotNull;
+import dev.filters.backend.dto.operator.AmountOperator;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @AllArgsConstructor
-public class AmountConditionDTO extends FilterConditionDTO {
+@NoArgsConstructor
+public class AmountConditionDTO implements Condition {
 
-  @NotNull(message = "Amount operator is required")
   private AmountOperator operator;
-
-  @NotNull(message = "Amount value is required")
   private Double value;
-
-  public AmountConditionDTO() {
-    super("amount");
-  }
 
 }

@@ -1,7 +1,12 @@
 package dev.filters.backend.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.filters.backend.dto.*;
+import dev.filters.backend.dto.operator.AmountOperator;
+import dev.filters.backend.dto.operator.DateOperator;
+import dev.filters.backend.dto.operator.TitleOperator;
 import dev.filters.backend.entity.FilterConditionEntity;
 import dev.filters.backend.entity.FilterEntity;
 import lombok.RequiredArgsConstructor;
@@ -19,19 +24,6 @@ public class FilterConverter {
 
   private final ObjectMapper objectMapper;
 
-  public FilterConditionDTO deserializeConditionDetails(String conditionType, String jsonDetails) throws IOException {
-    return switch (conditionType) {
-      case "amount" -> objectMapper.readValue(jsonDetails, AmountConditionDTO.class);
-      case "title" -> objectMapper.readValue(jsonDetails, TitleConditionDTO.class);
-      case "date" -> objectMapper.readValue(jsonDetails, DateConditionDTO.class);
-      default -> throw new IllegalArgumentException("Unknown condition type: " + conditionType);
-    };
-  }
-
-  public String serializeConditionDTO(FilterConditionDTO conditionDTO) throws IOException {
-    return objectMapper.writeValueAsString(conditionDTO);
-  }
-
   public FilterDTO toDto(FilterEntity entity) {
     FilterDTO dto = FilterDTO.builder()
         .id(entity.getId())
@@ -39,21 +31,29 @@ public class FilterConverter {
         .active(entity.isActive())
         .build();
 
-    // Map conditions
     if (entity.getConditions() != null) {
-      List<FilterConditionDTO> dtoList = entity.getConditions().stream()
-          .map(conditionEntity -> {
-            try {
-              log.debug(">>> type = {}, details = {}", conditionEntity.getConditionType(), conditionEntity.getConditionDetails());
-              return deserializeConditionDetails(conditionEntity.getConditionType(), conditionEntity.getConditionDetails());
-            } catch (IOException e) {
-              throw new RuntimeException("Error deserializing condition details", e);
-            }
-          })
-          .toList();
-      dto.setConditions(dtoList);
+      List<Condition> conditions = entity.getConditions().stream().map(this::toConditionDTO).toList();
+      dto.setConditions(conditions);
     }
+
     return dto;
+  }
+
+  private Condition toConditionDTO(FilterConditionEntity conditionEntity) {
+    JsonNode jsonNode;
+    try {
+      jsonNode = objectMapper.readTree(conditionEntity.getConditionDetails());
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+
+    return switch (conditionEntity.getConditionType()) {
+      case "amount" -> new AmountConditionDTO(AmountOperator.valueOf(jsonNode.path("operator").asText()), jsonNode.path("value").asDouble());
+      case "date" -> new DateConditionDTO(DateOperator.valueOf(jsonNode.path("operator").asText()), jsonNode.path("value").asText());
+      case "title" -> new TitleConditionDTO(TitleOperator.valueOf(jsonNode.path("operator").asText()), jsonNode.path("value").asText());
+      default
+        -> throw new IllegalArgumentException("Unknown condition type: " + conditionEntity.getConditionType());
+    };
   }
 
   public FilterEntity toEntity(FilterDTO dto) {
@@ -68,13 +68,18 @@ public class FilterConverter {
         try {
           // Serialize the DTO into a JSON string for the entity
           String jsonDetails = serializeConditionDTO(conditionDTO);
-          FilterConditionEntity conditionEntity = new FilterConditionEntity(UUID.randomUUID().toString(), entity, conditionDTO.getType(), jsonDetails);
-          entity.addCondition(conditionEntity); // Use helper to set bidirectional link
+          // TODO type!!!
+          FilterConditionEntity conditionEntity = new FilterConditionEntity(UUID.randomUUID().toString(), entity, null, jsonDetails);
+          entity.addCondition(conditionEntity);
         } catch (IOException e) {
           throw new RuntimeException("Error serializing condition DTO", e);
         }
       });
     }
     return entity;
+  }
+
+  private String serializeConditionDTO(Condition conditionDTO) throws JsonProcessingException {
+    return objectMapper.writeValueAsString(conditionDTO);
   }
 }
