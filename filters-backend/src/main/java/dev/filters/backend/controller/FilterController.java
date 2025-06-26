@@ -1,6 +1,6 @@
 package dev.filters.backend.controller;
 
-import dev.filters.backend.dto.FilterDto;
+import dev.filters.backend.dto.FilterDTO;
 import dev.filters.backend.service.FilterNotFoundException;
 import dev.filters.backend.service.FilterService;
 import jakarta.validation.Valid;
@@ -23,13 +23,13 @@ public class FilterController {
   }
 
   @GetMapping
-  public ResponseEntity<List<FilterDto>> getAllFilters() {
+  public ResponseEntity<List<FilterDTO>> getAllFilters() {
     return ResponseEntity.ok(filterService.allFilters());
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<FilterDto> getFilterById(@PathVariable UUID id) {
-    Optional<FilterDto> filter = filterService.findById(id);
+  public ResponseEntity<FilterDTO> getFilterById(@PathVariable UUID id) {
+    Optional<FilterDTO> filter = filterService.findById(id);
 
     return filter
         .map(ResponseEntity::ok)
@@ -37,18 +37,18 @@ public class FilterController {
   }
 
   @PostMapping
-  public ResponseEntity<FilterDto> createFilter(@Valid @RequestBody FilterDto filterDto) {
-    FilterDto created = filterService.create(filterDto);
+  public ResponseEntity<FilterDTO> createFilter(@Valid @RequestBody FilterDTO FilterDTO) {
+    FilterDTO created = filterService.create(FilterDTO);
     return ResponseEntity.ok(created);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<FilterDto> updateFilter(
+  public ResponseEntity<FilterDTO> updateFilter(
       @PathVariable UUID id,
-      @Valid @RequestBody FilterDto filterDto) {
+      @Valid @RequestBody FilterDTO FilterDTO) {
 
     try {
-      FilterDto updated = filterService.update(id, filterDto);
+      FilterDTO updated = filterService.update(id, FilterDTO);
       return ResponseEntity.ok(updated);
     } catch (FilterNotFoundException e) {
       return ResponseEntity.notFound().build();
