@@ -7,7 +7,7 @@ import {FilterService} from './filter-service';
 @Injectable()
 export class LocalFilterService implements FilterService {
 
-  private filters$: BehaviorSubject<Filters>;
+  private readonly filters$: BehaviorSubject<Filters>;
 
   constructor() {
     this.filters$ = new BehaviorSubject<Filters>(MOCKED_FILTERS);

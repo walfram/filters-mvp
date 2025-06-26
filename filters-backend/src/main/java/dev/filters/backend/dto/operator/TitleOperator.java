@@ -1,11 +1,13 @@
 package dev.filters.backend.dto.operator;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 @Getter
 public enum TitleOperator {
   STARTS_WITH("startsWith"), ENDS_WITH("endsWith"), CONTAINS("contains"), EQUALS("equals");
 
+  @JsonValue
   private final String name;
 
   TitleOperator(String name) {

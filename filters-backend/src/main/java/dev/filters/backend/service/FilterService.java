@@ -35,14 +35,14 @@ public class FilterService {
   }
 
   @Transactional
-  public FilterDTO update(UUID id, FilterDTO FilterDTO) throws FilterNotFoundException {
+  public FilterDTO update(UUID id, FilterDTO filterDTO) throws FilterNotFoundException {
     Optional<FilterEntity> existingFilter = filterRepository.findById(id);
 
     if (existingFilter.isEmpty()) {
       throw new FilterNotFoundException("Filter not found");
     }
 
-    FilterEntity entity = filterConverter.toEntity(FilterDTO);
+    FilterEntity entity = filterConverter.toEntity(filterDTO);
     filterRepository.save(entity);
 
     return filterConverter.toDto(entity);

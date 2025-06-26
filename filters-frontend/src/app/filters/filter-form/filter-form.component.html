@@ -30,7 +30,7 @@
 
         <mat-form-field appearance="fill" subscriptSizing="dynamic">
           <mat-label>Operator</mat-label>
-          <mat-select formControlName="operator" (selectionChange)="onFieldChange()">
+          <mat-select formControlName="operator" (selectionChange)="onOperatorChange()">
             @let typeValue = condition.get('type')?.value;
             @let ops = operators(typeValue);
             @for (operator of ops; track $index) {

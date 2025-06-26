@@ -5,9 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -15,10 +13,10 @@ import java.time.ZoneId;
 public class DateConditionDTO implements Condition {
 
   DateOperator operator;
-  LocalDateTime value;
+  LocalDate value;
 
   public DateConditionDTO(DateOperator operator, String value) {
-    this(operator, Instant.parse(value).atZone(ZoneId.of("UTC")).toLocalDateTime());
+    this(operator, LocalDate.parse(value));
   }
 
 }

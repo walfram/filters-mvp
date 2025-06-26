@@ -66,10 +66,9 @@ public class FilterConverter {
     if (dto.getConditions() != null) {
       dto.getConditions().forEach(conditionDTO -> {
         try {
-          // Serialize the DTO into a JSON string for the entity
+          String type = typeOfCondition(conditionDTO);
           String jsonDetails = serializeConditionDTO(conditionDTO);
-          // TODO type!!!
-          FilterConditionEntity conditionEntity = new FilterConditionEntity(UUID.randomUUID().toString(), entity, null, jsonDetails);
+          FilterConditionEntity conditionEntity = new FilterConditionEntity(UUID.randomUUID().toString(), entity, type, jsonDetails);
           entity.addCondition(conditionEntity);
         } catch (IOException e) {
           throw new RuntimeException("Error serializing condition DTO", e);
@@ -77,6 +76,15 @@ public class FilterConverter {
       });
     }
     return entity;
+  }
+
+  private String typeOfCondition(Condition conditionDTO) {
+    try {
+      JsonNode jsonNode = objectMapper.valueToTree(conditionDTO);
+      return jsonNode.get("type").asText();
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to extract type from condition", e);
+    }
   }
 
   private String serializeConditionDTO(Condition conditionDTO) throws JsonProcessingException {

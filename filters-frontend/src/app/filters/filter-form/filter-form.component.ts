@@ -134,4 +134,8 @@ export class FilterFormComponent implements OnInit {
       conditionGroup.get('value')?.reset('');
     }
   }
+
+  onOperatorChange() {
+    console.log('onOperatorChange called');
+  }
 }

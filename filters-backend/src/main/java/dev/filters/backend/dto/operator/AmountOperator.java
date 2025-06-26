@@ -1,11 +1,13 @@
 package dev.filters.backend.dto.operator;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 @Getter
 public enum AmountOperator {
   GT(">"), GTE(">="), EQ("="), LTE("<="), LT("<");
 
+  @JsonValue
   private final String symbol;
 
   AmountOperator(String symbol) {

@@ -1,11 +1,13 @@
 package dev.filters.backend.dto.operator;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 @Getter
 public enum DateOperator {
   BEFORE("before"), AFTER("after"), ON("on");
 
+  @JsonValue
   private final String name;
 
   DateOperator(String name) {

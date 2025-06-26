@@ -6,7 +6,7 @@ export type AmountOperator = typeof amountOperators[number];
 export const AmountConditionSchema = z.object({
   type: z.literal('amount'),
   operator: z.enum(amountOperators),
-  value: z.number(),
+  value: z.coerce.number(), // This will coerce string inputs to numbers
 });
 
 export const titleOperators = ['startsWith', 'endsWith', 'contains', 'equals'] as const;
@@ -24,9 +24,12 @@ export const DateConditionSchema = z.object({
   operator: z.enum(dateOperators),
   value: z
     .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, {
+      message: 'Must be in YYYY-MM-DD format',
+    })
     .refine((val) => !isNaN(Date.parse(val)), {
-      message: 'Invalid ISO date string',
-    }),
+      message: 'Must be a valid date',
+    })
 });
 
 export type AmountCondition = z.infer<typeof AmountConditionSchema>;
