@@ -1,0 +1,21 @@
+{
+    "name": "Sample Filter",
+    "conditions": [
+        {
+            "type": "amount",
+            "operator": "GREATER_THEN",
+            "value": 100.0
+        },
+        {
+            "type": "title",
+            "operator": "CONTAINS",
+            "value": "example"
+        },
+        {
+            "type": "date",
+            "operator": "AFTER",
+            "value": "2025-07-03"
+        }
+    ],
+    "active": true
+}
