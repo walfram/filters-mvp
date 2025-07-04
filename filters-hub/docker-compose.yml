@@ -1,0 +1,49 @@
+version: '3.8' # Specify the Docker Compose file format version
+
+services:
+  # Service for your Spring Boot application
+  app:
+    build:
+      context: . # Build the image from the current directory (where Dockerfile is located)
+      dockerfile: Dockerfile # Specify the Dockerfile to use
+    container_name: spring-boot-app
+    ports:
+      - "8080:8080" # Map host port 8080 to container port 8080
+    environment:
+    # Environment variables for Spring Boot to connect to the PostgreSQL database
+    # Make sure these match your application.properties/application.yml settings
+    # If you're not using a database, you might remove or adjust these.
+    # SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/mydatabase
+    # SPRING_DATASOURCE_USERNAME: myuser
+    # SPRING_DATASOURCE_PASSWORD: mypassword
+    # SPRING_JPA_HIBERNATE_DDL_AUTO: update # Or 'none', 'create', 'create-drop' based on your needs
+      SPRING_PROFILES_ACTIVE: dev
+    # depends_on: # Remove or comment out if 'db' is no longer a dependency
+    #   - db
+    networks:
+      - app-network # Connect to the custom network
+
+  # Service for the PostgreSQL database (commented out to disable)
+  # db:
+  #   image: postgres:16-alpine # Use a lightweight PostgreSQL 16 image
+  #   container_name: postgres-db
+  #   ports:
+  #     - "5432:5432" # Map host port 5432 to container port 5432
+  #   environment:
+  #     POSTGRES_DB: mydatabase # Database name
+  #     POSTGRES_USER: myuser # Database user
+  #     POSTGRES_PASSWORD: mypassword # Database password
+  #   volumes:
+  #     # Persist database data to a named volume to avoid data loss on container removal
+  #     - db_data:/var/lib/postgresql/data
+  #   networks:
+  #     - app-network # Connect to the custom network
+
+# Define named volumes for data persistence (commented out if no longer needed)
+# volumes:
+#   db_data: # This volume will store PostgreSQL data
+
+# Define a custom network for services to communicate
+networks:
+  app-network:
+    driver: bridge # Use the default bridge driver
