@@ -48,7 +48,7 @@ public class FilterControllerHappyPathsTest {
     );
 
     mockMvc.perform(
-            patch("/api/filter")
+            patch("/api/filter/xxx")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(updateFilterRequest)
         )
