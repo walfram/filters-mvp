@@ -20,6 +20,8 @@ public class FilterControllerHappyPathsTest {
   @Autowired
   private MockMvc mockMvc;
 
+  void should_return_ok_for_create_filter_request_with_extra_fields() {}
+
   @Test
   void should_return_ok_for_filter_list_request() throws Exception {
     mockMvc.perform(
