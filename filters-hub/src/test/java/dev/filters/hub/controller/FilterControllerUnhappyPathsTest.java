@@ -26,6 +26,12 @@ public class FilterControllerUnhappyPathsTest {
       "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": null, \"active\": true, \"conditions\": [] }",
       // Filter: null active
       "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Valid Filter\", \"active\": null, \"conditions\": [] }",
+
+      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": null, \"active\": true }",
+      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": null, \"conditions\": [] }",
+      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"active\": true, \"conditions\": [] }",
+      "{}",
+
       // Filter: empty conditions list (assuming @NotEmpty applies to the list being non-empty, not just non-null)
       // If @NotEmpty means "at least one element", then [] is invalid. If it means "not null and not empty", it's also invalid.
       "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Valid Filter\", \"active\": true, \"conditions\": [] }",
