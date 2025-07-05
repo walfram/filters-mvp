@@ -12,5 +12,5 @@ public record Filter(
     UUID id,
     @NotBlank String name,
     @NotNull Boolean active,
-    @NotEmpty List<@Valid Condition> conditions
+    @NotEmpty List<@NotNull @Valid Condition> conditions
 ) {}
