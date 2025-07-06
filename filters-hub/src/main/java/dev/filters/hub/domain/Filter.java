@@ -13,4 +13,13 @@ public record Filter(
     @NotBlank String name,
     @NotNull Boolean active,
     @NotEmpty List<@NotNull @Valid Condition> conditions
-) {}
+) {
+  public Filter(UUID id, @Valid Filter filter) {
+    this(
+        id,
+        filter.name(),
+        filter.active(),
+        filter.conditions()
+    );
+  }
+}
