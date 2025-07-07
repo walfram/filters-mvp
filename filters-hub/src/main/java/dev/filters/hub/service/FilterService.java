@@ -67,4 +67,12 @@ public class FilterService {
         )
     );
   }
+
+  public Filter update(UUID filterId, Filter filter) {
+    return new Filter(filterId, filter);
+  }
+
+  public void delete(UUID filterId) {
+
+  }
 }

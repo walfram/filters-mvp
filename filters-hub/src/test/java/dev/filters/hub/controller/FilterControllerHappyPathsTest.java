@@ -36,6 +36,8 @@ public class FilterControllerHappyPathsTest {
   void should_return_ok_for_update_filter_request_with_extra_fields() throws Exception {
     String payload = "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"foo\": \"bar\", \"name\": \"Updated High Value Transactions\", \"active\": true, \"conditions\": [ { \"type\": \"amount\", \"operator\": \"GREATER_THEN\", \"value\": 1500.0 } ] }";
 
+    when(filterService.update(any(UUID.class), any(Filter.class))).thenReturn(mapper.readValue(payload, Filter.class));
+
     mockMvc.perform(
             put("/api/filter/a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -78,7 +80,7 @@ public class FilterControllerHappyPathsTest {
   @Test
   void should_return_ok_for_valid_delete_filter_request() throws Exception {
     mockMvc.perform(
-            delete("/api/filter/xxx")
+            delete("/api/filter/a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11")
                 .contentType(MediaType.APPLICATION_JSON)
         )
         .andExpect(status().isNoContent());
@@ -102,6 +104,8 @@ public class FilterControllerHappyPathsTest {
   void should_return_200_for_update_filter_valid_payload(String validPayload) throws Exception {
     JsonNode root = mapper.readTree(validPayload);
     String id = root.get("id").asText();
+
+    when(filterService.update(any(UUID.class), any(Filter.class))).thenReturn(mapper.readValue(validPayload, Filter.class));
 
     mockMvc.perform(
             put("/api/filter/" + id)

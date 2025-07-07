@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @RequestMapping("/api")
 @RestController
@@ -31,12 +32,14 @@ public class FilterController {
   }
 
   @PutMapping("/filter/{filterId}")
-  public ResponseEntity<Filter> update(@Valid @RequestBody Filter filter, @PathVariable String filterId) {
-    return ResponseEntity.ok(filter);
+  public ResponseEntity<Filter> update(@Valid @RequestBody Filter filter, @PathVariable UUID filterId) {
+    Filter updated = filterService.update(filterId, filter);
+    return ResponseEntity.ok(updated);
   }
 
   @DeleteMapping("/filter/{filterId}")
-  public ResponseEntity<Void> delete(@PathVariable String filterId) {
+  public ResponseEntity<Void> delete(@PathVariable UUID filterId) {
+    filterService.delete(filterId);
     return ResponseEntity.noContent().build();
   }
 
