@@ -1,1 +1,30 @@
-<p>filter-list works!</p>
+<div class="filter-list-container">
+
+  @for (filter of filters$ | async; track filter.name) {
+    <div class="filter-list-item">
+      <div class="filter-title">{{ filter.name }}</div>
+      <div class="filter-criteria">{{ filter.criteria.length }}</div>
+
+      <div class="filter-criteria-list">
+        @for (criterion of filter.criteria; track criterion.id) {
+          <div class="filter-criteria-item">
+            {{ criterion | criterionToString }}
+          </div>
+        }
+      </div>
+
+      <div class="filter-actions">
+        <button matMiniFab title="Edit filter">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button matMiniFab title="Apply filter">
+          <mat-icon>check_circle</mat-icon>
+        </button>
+        <button matMiniFab title="Delete filter">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+  }
+
+</div>
