@@ -1,4 +1,73 @@
 :host {
+  /*padding: 0.2rem;*/
+  /*display: block;*/
+}
+
+form {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.bordered {
+  border-radius: 8px;
+  background-color: #f5f5f5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.filter-title {
+  display: flex;
+  justify-content: space-between;
   padding: 1rem;
-  background-color: #fff;
+  margin-bottom: 1rem;
+}
+.filter-title mat-form-field {
+  flex: 1;
+}
+
+.add-button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.criterion-container {
+  /*display: flex;*/
+  /*gap: 1rem;*/
+}
+
+.criterion-item {
+  display: flex;
+  flex-flow: row nowrap; /* keep children in one row */
+  align-items: center; /* vertically center items */
+  gap: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.narrow {
+  width: 100px;
+}
+
+/* Push the last button to the right */
+.criterion-item > button:last-of-type {
+  margin-left: auto;
+}
+
+/* Optional sizing tweaks */
+.criterion-item mat-form-field:not(.narrow) {
+  width: auto;
+  min-width: 180px;
+  flex: 0 0 auto;
+}
+
+.criterion-item select,
+.criterion-item input[type="text"],
+.criterion-item input[type="number"],
+.criterion-item input[type="date"] {
+  flex: 0 0 auto;
+}
+
+/* Optional: keep the checkbox label inline without wrapping */
+.criterion-item label {
+  white-space: nowrap;
 }

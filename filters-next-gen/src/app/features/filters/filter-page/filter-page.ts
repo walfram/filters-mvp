@@ -5,7 +5,7 @@ import {FilterList} from '../filter-list/filter-list';
 import {Filter} from '../types/filter';
 import {FilterService} from '../../../shared/services/filter-service';
 import {FilterDialog} from '../filter-dialog/filter-dialog';
-import {MatDialog} from '@angular/material/dialog';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-filter-page',
@@ -25,17 +25,22 @@ export class FilterPage {
   onShowFilterDialog(filter?: Filter) {
     console.log('showing filter add modal');
 
-    const dialogRef = this.dialog.open<FilterDialog>(FilterDialog, {
-      width: '500px',
-      hasBackdrop: true,
-      data: {
-        filter: filter || {
-          id: '',
-          name: '',
-          criteria: []
-        } as Filter
-      }
-    });
+    const config = new MatDialogConfig();
+    config.width = '90vw';
+    config.maxWidth = '95vw';
+    config.hasBackdrop = true;
+    config.height = '90vh';
+    config.maxHeight = '95vh';
+    config.panelClass = 'filter-dialog-panel';
+    config.data = {
+      filter: filter || {
+        id: '',
+        name: '',
+        criteria: []
+      } as Filter
+    }
+
+    const dialogRef = this.dialog.open<FilterDialog>(FilterDialog, config);
 
     dialogRef.afterClosed().subscribe(filter => {
       console.log('dialog closed', filter);

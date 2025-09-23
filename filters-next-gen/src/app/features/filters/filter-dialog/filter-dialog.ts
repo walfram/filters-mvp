@@ -1,8 +1,6 @@
 import {Component, inject, ViewChild} from '@angular/core';
-import {DialogRef} from '@angular/cdk/dialog';
 import {Filter} from '../types/filter';
 import {MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
-import {JsonPipe} from '@angular/common';
 import {MatButton} from '@angular/material/button';
 import {FilterForm} from '../filter-form/filter-form';
 
@@ -10,7 +8,6 @@ import {FilterForm} from '../filter-form/filter-form';
   selector: 'app-filter-dialog',
   imports: [
     MatDialogContent,
-    JsonPipe,
     MatDialogActions,
     MatButton,
     FilterForm,

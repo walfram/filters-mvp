@@ -1,11 +1,88 @@
-<div>filter form</div>
-<div>passed filter {{ filter | json }}</div>
+<form (ngSubmit)="onSubmit()" [formGroup]="form">
 
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="filter-title bordered">
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input formControlName="name" matInput>
+    </mat-form-field>
+  </div>
 
-  <mat-form-field appearance="outline">
-    <mat-label>Name</mat-label>
-    <input matInput formControlName="name">
-  </mat-form-field>
+  <div class="add-button-container">
+    <button (click)="addCriterion()" matButton="outlined" type="button">add criterion</button>
+  </div>
+
+
+  <div class="criterion-container" formArrayName="criteria">
+    @for (criterion of criteria.controls; let idx = $index; track criterion.value.id) {
+
+      <div class="criterion-item bordered" [formGroupName]="idx">
+        <!-- Criterion Type Select -->
+        <mat-form-field appearance="outline">
+          <mat-select formControlName="type" (selectionChange)="onTypeChange(idx)" value="string">
+            <mat-option value="number">Number</mat-option>
+            <mat-option value="string">String</mat-option>
+            <mat-option value="date">Date</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Operator Select (changes based on type) -->
+        @switch (criterion.get('type')?.value) {
+          @case ('number') {
+            <mat-form-field appearance="fill" class="narrow">
+              <mat-select formControlName="operator">
+                <mat-option value="eq">=</mat-option>
+                <mat-option value="gt">&gt;</mat-option>
+                <mat-option value="gte">&gt;=</mat-option>
+                <mat-option value="lt">&lt;</mat-option>
+                <mat-option value="lte">&lt;=</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+              <input matInput type="number" formControlName="value"/>
+            </mat-form-field>
+          }
+          @case ('string') {
+            <mat-form-field appearance="fill">
+              <mat-label>Operator</mat-label>
+              <mat-select formControlName="operator">
+                <mat-option value="eq">Equals</mat-option>
+                <mat-option value="contains">Contains</mat-option>
+                <mat-option value="startsWith">Starts With</mat-option>
+                <mat-option value="endsWith">Ends With</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Value</mat-label>
+              <input matInput formControlName="value"/>
+            </mat-form-field>
+
+            <mat-checkbox formControlName="caseSensitive">
+              Case Sensitive
+            </mat-checkbox>
+          }
+          @case ('date') {
+            <mat-form-field appearance="fill">
+              <mat-label>Operator</mat-label>
+              <mat-select formControlName="operator">
+                <mat-option value="equals">Equals</mat-option>
+                <mat-option value="before">Before</mat-option>
+                <mat-option value="after">After</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+              <input matInput type="date" formControlName="value"/>
+            </mat-form-field>
+          }
+        }
+
+        <button matMiniFab type="button" (click)="removeCriterion(idx)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    }
+  </div>
 
 </form>
