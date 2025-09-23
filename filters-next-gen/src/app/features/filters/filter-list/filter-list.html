@@ -1,6 +1,7 @@
 <div class="filter-list-container">
 
   @for (filter of filters$ | async; track filter.name) {
+
     <div class="filter-list-item">
       <div class="filter-title">{{ filter.name }}</div>
       <div class="filter-criteria">{{ filter.criteria.length }}</div>
@@ -25,6 +26,9 @@
         </button>
       </div>
     </div>
+
+    <div class="filter-id">{{filter.id}}</div>
+
   }
 
 </div>

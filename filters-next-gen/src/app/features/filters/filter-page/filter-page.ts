@@ -45,7 +45,7 @@ export class FilterPage {
       }
 
       console.log('saving filter', filter);
-      this.filterService.save(filter);
+      this.filterService.save(filter).subscribe(savedFilter => console.log('saved filter', savedFilter));
     });
   }
 }
