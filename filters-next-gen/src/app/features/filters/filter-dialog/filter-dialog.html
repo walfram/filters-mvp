@@ -1,0 +1,14 @@
+<h3 mat-dialog-title>add/edit filter</h3>
+<mat-dialog-content>
+  <div>current filter {{ filter | json }}</div>
+
+  <app-filter-form
+    (submit)="onSubmit($event)"
+    [filter]="filter"
+  ></app-filter-form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button (click)="onCancel()" mat-stroked-button>Close</button>
+  <button (click)="onSave()" color="primary" mat-flat-button>Save</button>
+</mat-dialog-actions>

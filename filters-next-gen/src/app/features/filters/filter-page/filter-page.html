@@ -1,8 +1,8 @@
 <header>
-  <a [routerLink]="['/filters/new']">New Filter</a>
-  <button matButton="tonal" (click)="onShowFilterAddModal()">new filter (modal)</button>
+  <a [routerLink]="['/filters/new']" matButton="outlined">New Filter (form)</a>
+  <button matButton="tonal" (click)="onShowFilterDialog()">new filter (modal)</button>
 </header>
 
 <main>
-  <app-filter-list></app-filter-list>
+  <app-filter-list [showFilterDialog]="onShowFilterDialog.bind(this)"></app-filter-list>
 </main>

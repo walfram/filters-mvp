@@ -1,0 +1,11 @@
+
+<app-filter-form
+  [filter]="filter"
+  (submit)="onSubmit($event)"
+></app-filter-form>
+
+<div class="form-actions">
+  <button mat-flat-button color="primary" (click)="save()">Submit</button>
+  <button mat-stroked-button (click)="reset()">Cancel</button>
+</div>
+

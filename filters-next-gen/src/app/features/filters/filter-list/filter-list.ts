@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, Input, OnInit} from '@angular/core';
 import {FilterService} from '../../../shared/services/filter-service';
 import {AsyncPipe} from '@angular/common';
 import {Filter} from '../types/filter';
@@ -19,6 +19,8 @@ import {CriterionToStringPipe} from '../../../shared/pipes/criterion-to-string-p
   styleUrl: './filter-list.css'
 })
 export class FilterList implements OnInit {
+  @Input({required: true}) showFilterDialog!: (filter?: Filter) => void;
+
   protected readonly filterService = inject(FilterService);
   protected filters$: Observable<Filter[]> | undefined;
 
