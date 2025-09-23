@@ -1,8 +1,9 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ViewChild} from '@angular/core';
 import {FilterForm} from '../filter-form/filter-form';
 import {Filter} from '../types/filter';
 import {Router} from '@angular/router';
 import {MatButton} from '@angular/material/button';
+import {FilterService} from '../../../shared/services/filter-service';
 
 @Component({
   selector: 'app-new-filter-page',
@@ -15,7 +16,10 @@ import {MatButton} from '@angular/material/button';
 })
 export class NewFilterPage {
 
+  @ViewChild(FilterForm, {static: true}) filterForm!: FilterForm;
+
   private readonly router = inject(Router);
+  private readonly filterService = inject(FilterService);
 
   protected readonly filter: Filter = {
     id: '',
@@ -25,10 +29,19 @@ export class NewFilterPage {
 
   onSubmit(filter: Filter) {
     console.log('created filter', filter);
+    this.filterService.save(filter).subscribe({
+      next: () => {
+        console.log('filter saved');
+        this.router.navigate(['/filters']).then(() => console.log('cancel, returning to filters'));
+      },
+      error: (err) => {
+        console.error('error saving filter', err);
+      }
+    });
   }
 
   save() {
-    console.log('new-filter-page.save, saving filter', this.filter);
+    this.filterForm.triggerSubmit();
   }
 
   reset() {
