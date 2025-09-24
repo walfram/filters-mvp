@@ -1,7 +1,7 @@
 import {Routes} from '@angular/router';
 import {FilterPage} from './features/filters/filter-page/filter-page';
 import {NewFilterPage} from './features/filters/new-filter-page/new-filter-page';
-import {DebugDialog} from './debug/debug-dialog/debug-dialog';
+import {DebugDialog} from './features/debug/debug-dialog/debug-dialog';
 
 export const routes: Routes = [{
   path: 'filters',

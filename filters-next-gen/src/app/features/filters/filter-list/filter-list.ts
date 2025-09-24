@@ -1,5 +1,5 @@
 import {Component, inject, Input, OnInit} from '@angular/core';
-import {FilterService} from '../../../shared/services/filter-service';
+import {FilterService} from '../services/filter-service';
 import {AsyncPipe} from '@angular/common';
 import {Filter} from '../types/filter';
 import {Observable} from 'rxjs';

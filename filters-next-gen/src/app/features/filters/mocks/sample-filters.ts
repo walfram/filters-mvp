@@ -1,4 +1,4 @@
-import {Filter} from '../features/filters/types/filter';
+import {Filter} from '../types/filter';
 
 export const SAMPLE_FILTERS: Filter[] = [
   {

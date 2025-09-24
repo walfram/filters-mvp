@@ -3,7 +3,7 @@ import {RouterLink} from '@angular/router';
 import {MatButton} from '@angular/material/button';
 import {FilterList} from '../filter-list/filter-list';
 import {Filter} from '../types/filter';
-import {FilterService} from '../../../shared/services/filter-service';
+import {FilterService} from '../services/filter-service';
 import {FilterDialog} from '../filter-dialog/filter-dialog';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 

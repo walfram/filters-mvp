@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import {Filter} from '../../features/filters/types/filter';
-import {SAMPLE_FILTERS} from '../../mocks/sample-filters';
 import {BehaviorSubject, catchError, delay, map, Observable, of, tap} from 'rxjs';
 import {v4} from 'uuid';
+import {Filter} from '../types/filter';
+import {SAMPLE_FILTERS} from '../mocks/sample-filters';
 
 @Injectable({
   providedIn: 'root'

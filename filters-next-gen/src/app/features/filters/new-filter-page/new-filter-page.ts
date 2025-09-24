@@ -3,7 +3,7 @@ import {FilterForm} from '../filter-form/filter-form';
 import {Filter} from '../types/filter';
 import {Router} from '@angular/router';
 import {MatButton} from '@angular/material/button';
-import {FilterService} from '../../../shared/services/filter-service';
+import {FilterService} from '../services/filter-service';
 
 @Component({
   selector: 'app-new-filter-page',
