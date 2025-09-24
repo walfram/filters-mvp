@@ -10,10 +10,6 @@ import {v4} from 'uuid';
 import {MatOption, MatSelect} from '@angular/material/select';
 import {MatCheckbox} from '@angular/material/checkbox';
 
-// interface AmountCriterionControls {}
-// interface TitleCriterionControls {}
-// interface DateCriterionControl {}
-
 @Component({
   selector: 'app-filter-form',
   imports: [
@@ -35,15 +31,10 @@ export class FilterForm implements OnInit {
 
   @Input({required: true}) filter!: Filter;
   @Output() submit = new EventEmitter<Filter>();
-  // @Output() cancel = new EventEmitter<void>();
 
   private readonly formBuilder = inject(NonNullableFormBuilder);
 
   protected form!: FormGroup;
-
-  constructor() {
-    console.log('FilterForm.constructor, filter', this.filter);
-  }
 
   get criteria() {
     return this.form.get('criteria') as FormArray;
@@ -73,53 +64,38 @@ export class FilterForm implements OnInit {
 
   private createAmountCriterionGroup(criterion: AmountCriterion): FormGroup {
     return this.formBuilder.group({
-      id: [criterion.id ?? ''],
+      id: [criterion.id],
       type: ['number', Validators.required],
-      operator: [criterion?.operator ?? 'eq', Validators.required],
-      value: [criterion?.value ?? 0, Validators.required],
+      operator: [criterion.operator, Validators.required],
+      value: [criterion.value, Validators.required],
     });
   }
 
   private createTitleCriterionGroup(criterion: TitleCriterion): FormGroup {
     return this.formBuilder.group({
-      id: [criterion?.id ?? ''],
+      id: [criterion.id],
       type: ['string', Validators.required],
-      operator: [criterion?.operator ?? 'eq', Validators.required],
-      value: [criterion?.value ?? '', Validators.required],
-      caseSensitive: [criterion?.caseSensitive ?? false],
+      operator: [criterion.operator, Validators.required],
+      value: [criterion.value, Validators.required],
+      caseSensitive: [criterion.caseSensitive],
     });
   }
 
-  private createDateCriterionGroup(criterion?: DateCriterion): FormGroup {
+  private createDateCriterionGroup(criterion: DateCriterion): FormGroup {
     return this.formBuilder.group({
-      id: [criterion?.id ?? ''],
+      id: [criterion.id],
       type: ['date', Validators.required],
-      operator: [criterion?.operator ?? 'equals', Validators.required],
-      value: [criterion?.value ?? null, Validators.required],
+      operator: [criterion.operator, Validators.required],
+      value: [criterion.value, Validators.required],
     });
   }
-
-  // private addCriterion(type: 'number' | 'string' | 'date') {
-  //   const criteriaArray = this.filterForm.get('criteria') as FormArray;
-  //   switch (type) {
-  //     case 'number':
-  //       criteriaArray.push(this.createAmountCriterionGroup());
-  //       break;
-  //     case 'string':
-  //       criteriaArray.push(this.createTitleCriterionGroup());
-  //       break;
-  //     case 'date':
-  //       criteriaArray.push(this.createDateCriterionGroup());
-  //       break;
-  //   }
-  // }
 
   onSubmit() {
     if (this.form.valid) {
       this.submit.emit({
         ...this.form.getRawValue(),
-        id: this.filter.id,
-        criteria: [] // TODO fixme :)
+        id: this.filter.id
+        // criteria: [] // TODO fixme :)
       });
     } else {
       console.log('invalid form');
@@ -130,13 +106,15 @@ export class FilterForm implements OnInit {
     this.onSubmit();
   }
 
-  onTypeChange(index: number) {
+  onTypeChange(type: string, index: number) {
+    console.log('onTypeChange @', index);
     const control = this.criteria.at(index);
-    const type = control.get('type')?.value;
-
+    console.log('control', control);
+    // const type = control.get('type')?.value;
+    console.log('type', type);
     const id = control.get('id')?.value as string;
+    console.log('id', id);
 
-    // Replace this FormGroup with a new one for the chosen type
     switch (type) {
       case 'number':
         this.criteria.setControl(index, this.createAmountCriterionGroup(this.emptyAmountCriterion(id)));
@@ -151,16 +129,8 @@ export class FilterForm implements OnInit {
   }
 
   addCriterion() {
-    // TODO AmountCriterion is default
-    const criterion = this.formBuilder.group({
-      id: v4(),
-      field: '',
-      operator: '',
-      value: ''
-    });
-    this.criteria.push(criterion);
-
-    console.log('criteria', this.criteria.length);
+    this.criteria.push(this.createAmountCriterionGroup(this.emptyAmountCriterion(v4())));
+    console.log('added criterion, criteria.length', this.criteria.length);
   }
 
   removeCriterion(idx: number) {

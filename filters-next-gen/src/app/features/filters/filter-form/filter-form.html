@@ -18,7 +18,7 @@
       <div class="criterion-item bordered" [formGroupName]="idx">
         <!-- Criterion Type Select -->
         <mat-form-field appearance="outline">
-          <mat-select formControlName="type" (selectionChange)="onTypeChange(idx)" value="string">
+          <mat-select formControlName="type" (valueChange)="onTypeChange($event, idx)">
             <mat-option value="number">Number</mat-option>
             <mat-option value="string">String</mat-option>
             <mat-option value="date">Date</mat-option>
