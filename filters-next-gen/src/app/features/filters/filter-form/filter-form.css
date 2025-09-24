@@ -31,8 +31,9 @@ form {
 }
 
 .criterion-container {
-  /*display: flex;*/
-  /*gap: 1rem;*/
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
 }
 
 .criterion-item {
@@ -42,6 +43,9 @@ form {
   gap: 0.5rem;
   padding: 1rem;
   margin-bottom: 0.5rem;
+}
+.criterion-item.has-error {
+  border: 2px dashed red;
 }
 
 .narrow {
