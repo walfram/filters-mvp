@@ -41,6 +41,7 @@ export class NewFilterPage {
   }
 
   save() {
+    console.log('triggering submit in new-filter-page');
     this.filterForm.triggerSubmit();
   }
 

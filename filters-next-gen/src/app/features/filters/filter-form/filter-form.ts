@@ -53,7 +53,7 @@ export class FilterForm implements OnInit {
       = this.filter.criteria.map(c => this.createCriterionGroup(c));
 
     this.form = this.formBuilder.group<FilterFormGroup>({
-      id: this.formBuilder.control(this.filter.id, [Validators.required]),
+      id: this.formBuilder.control(this.filter.id),
       name: this.formBuilder.control(this.filter.name, [Validators.required, Validators.minLength(3), Validators.maxLength(100)]),
       // new FormArray and not this.formBuilder.array 'cause TypeScript was going nuts and could not assign the correct type
       criteria: new FormArray<CriterionFormGroup>(groups, [Validators.required])
@@ -78,7 +78,7 @@ export class FilterForm implements OnInit {
       id: this.formBuilder.control(criterion.id),
       type: this.formBuilder.control('number', [Validators.required]),
       operator: this.formBuilder.control(criterion.operator, [Validators.required]),
-      value: this.formBuilder.control(criterion.value, [Validators.required])
+      value: this.formBuilder.control(criterion.value, [Validators.required, Validators.min(10)])
     });
   }
 
@@ -112,13 +112,15 @@ export class FilterForm implements OnInit {
     console.log('raw value', this.form.getRawValue());
     console.log('value', this.form.value);
 
+    console.log('is form valid?', this.form.valid);
+
     if (this.form.valid) {
       this.submit.emit({
         ...this.form.getRawValue(),
         id: this.filter.id
       });
     } else {
-      console.log('invalid form');
+      console.log('invalid form', this.form.errors);
     }
   }
 
