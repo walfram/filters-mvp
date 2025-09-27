@@ -1,0 +1,24 @@
+<div [formGroup]="group">
+
+  <mat-form-field appearance="fill">
+    <mat-label>Operator</mat-label>
+    <mat-select formControlName="operator">
+      <mat-option value="equals">Equals</mat-option>
+      <mat-option value="before">Before</mat-option>
+      <mat-option value="after">After</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Choose date</mat-label>
+    <input matInput [matDatepicker]="picker" formControlName="value">
+    <mat-hint>DD/MM/YYYY</mat-hint>
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  @if (group.controls.value.invalid) {
+    <mat-error>{{ group.controls.value.errors | json }}</mat-error>
+  }
+
+</div>

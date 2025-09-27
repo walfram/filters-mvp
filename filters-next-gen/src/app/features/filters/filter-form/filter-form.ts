@@ -1,6 +1,6 @@
 import {Component, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
 import {Filter} from '../types/filter';
-import {FormArray, FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
+import {FormArray, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatError, MatFormField, MatHint, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatButton, MatMiniFabButton} from '@angular/material/button';
@@ -8,43 +8,13 @@ import {MatIcon} from '@angular/material/icon';
 import {AmountCriterion, Criterion, DateCriterion, TitleCriterion} from '../types/criterion';
 import {v4} from 'uuid';
 import {MatOption, MatSelect} from '@angular/material/select';
-import {MatCheckbox} from '@angular/material/checkbox';
 import {JsonPipe, NgClass} from '@angular/common';
 import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
 import {dateValidator} from '../validators/date-validator';
-
-interface AmountCriterionForm {
-  id: FormControl<string>;
-  type: FormControl<'number'>;
-  operator: FormControl<'eq' | 'gt' | 'gte' | 'lt' | 'lte'>;
-  value: FormControl<number>;
-}
-
-interface TitleCriterionForm {
-  id: FormControl<string>;
-  type: FormControl<'string'>;
-  operator: FormControl<'eq' | 'contains' | 'startsWith' | 'endsWith'>;
-  value: FormControl<string>;
-  caseSensitive: FormControl<boolean>;
-}
-
-interface DateCriterionForm {
-  id: FormControl<string>;
-  type: FormControl<'date'>;
-  operator: FormControl<'before' | 'after' | 'equals'>;
-  value: FormControl<Date>;
-}
-
-type CriterionFormGroup =
-  FormGroup<AmountCriterionForm> |
-  FormGroup<TitleCriterionForm> |
-  FormGroup<DateCriterionForm>;
-
-interface FilterFormGroup {
-  id: FormControl<string>;
-  name: FormControl<string>;
-  criteria: FormArray<CriterionFormGroup>;
-}
+import {TitleControls} from '../criterions/title-controls/title-controls';
+import {AmountCriterionForm, CriterionFormGroup, DateCriterionForm, FilterFormGroup, TitleCriterionForm} from '../types/filter-form-group';
+import {AmountControls} from '../criterions/amount-controls/amount-controls';
+import {DateControls} from '../criterions/date-controls/date-controls';
 
 @Component({
   selector: 'app-filter-form',
@@ -58,14 +28,16 @@ interface FilterFormGroup {
     MatIcon,
     MatSelect,
     MatOption,
-    MatCheckbox,
     NgClass,
     MatHint,
     MatDatepickerToggle,
     MatDatepicker,
     MatDatepickerInput,
     MatError,
-    JsonPipe
+    JsonPipe,
+    TitleControls,
+    AmountControls,
+    DateControls
   ],
   templateUrl: './filter-form.html',
   styleUrl: './filter-form.css',
@@ -90,7 +62,7 @@ export class FilterForm implements OnInit {
     this.form = this.formBuilder.group<FilterFormGroup>({
       id: this.formBuilder.control(this.filter.id, [Validators.required]),
       name: this.formBuilder.control(this.filter.name, [Validators.required, Validators.minLength(3), Validators.maxLength(100)]),
-      // new FormArray and not this.formBuilder.array 'cause TypeScript was going nuts and could not assign correct type
+      // new FormArray and not this.formBuilder.array 'cause TypeScript was going nuts and could not assign the correct type
       criteria: new FormArray<CriterionFormGroup>(groups, [Validators.required])
     });
   }

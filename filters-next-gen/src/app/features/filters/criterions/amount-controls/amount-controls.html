@@ -1,0 +1,15 @@
+<div [formGroup]="group">
+  <mat-form-field appearance="fill" class="narrow">
+    <mat-select formControlName="operator">
+      <mat-option value="eq">=</mat-option>
+      <mat-option value="gt">&gt;</mat-option>
+      <mat-option value="gte">&gt;=</mat-option>
+      <mat-option value="lt">&lt;</mat-option>
+      <mat-option value="lte">&lt;=</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <input formControlName="value" matInput type="number"/>
+  </mat-form-field>
+</div>
