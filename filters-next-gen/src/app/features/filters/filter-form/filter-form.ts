@@ -1,15 +1,14 @@
 import {Component, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
 import {Filter} from '../types/filter';
 import {FormArray, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
-import {MatError, MatFormField, MatHint, MatLabel} from '@angular/material/form-field';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatButton, MatMiniFabButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {AmountCriterion, Criterion, DateCriterion, TitleCriterion} from '../types/criterion';
 import {v4} from 'uuid';
 import {MatOption, MatSelect} from '@angular/material/select';
-import {JsonPipe, NgClass} from '@angular/common';
-import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
+import {NgClass} from '@angular/common';
 import {dateValidator} from '../validators/date-validator';
 import {TitleControls} from '../criterions/title-controls/title-controls';
 import {AmountCriterionForm, CriterionFormGroup, DateCriterionForm, FilterFormGroup, TitleCriterionForm} from '../types/filter-form-group';
@@ -29,12 +28,6 @@ import {DateControls} from '../criterions/date-controls/date-controls';
     MatSelect,
     MatOption,
     NgClass,
-    MatHint,
-    MatDatepickerToggle,
-    MatDatepicker,
-    MatDatepickerInput,
-    MatError,
-    JsonPipe,
     TitleControls,
     AmountControls,
     DateControls
