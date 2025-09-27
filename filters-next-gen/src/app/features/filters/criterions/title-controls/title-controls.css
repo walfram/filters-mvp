@@ -1,0 +1,16 @@
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .controls {
+    flex-direction: row;
+  }
+
+  .controls .fill {
+    flex: 1;
+  }
+}
+

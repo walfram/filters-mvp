@@ -1,21 +1,24 @@
 <div [formGroup]="group">
 
-  <mat-form-field appearance="fill">
-    <mat-label>Operator</mat-label>
-    <mat-select formControlName="operator">
-      <mat-option value="equals">Equals</mat-option>
-      <mat-option value="before">Before</mat-option>
-      <mat-option value="after">After</mat-option>
-    </mat-select>
-  </mat-form-field>
+  <div class="controls">
+    <mat-form-field appearance="fill">
+      <mat-label>Operator</mat-label>
+      <mat-select formControlName="operator">
+        <mat-option value="equals">Equals</mat-option>
+        <mat-option value="before">Before</mat-option>
+        <mat-option value="after">After</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-  <mat-form-field appearance="fill">
-    <mat-label>Choose date</mat-label>
-    <input matInput [matDatepicker]="picker" formControlName="value">
-    <mat-hint>DD/MM/YYYY</mat-hint>
-    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
-  </mat-form-field>
+    <mat-form-field appearance="fill" class="fill">
+      <mat-label>Choose date</mat-label>
+      <input [matDatepicker]="picker" formControlName="value" matInput>
+      <mat-hint>DD/MM/YYYY</mat-hint>
+      <mat-datepicker-toggle [for]="picker" matIconSuffix></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+  </div>
 
   @if (group.controls.value.invalid) {
     <mat-error>{{ group.controls.value.errors | json }}</mat-error>

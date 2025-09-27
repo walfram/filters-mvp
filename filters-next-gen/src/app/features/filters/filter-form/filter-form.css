@@ -38,45 +38,90 @@ form {
 
 .criterion-item {
   display: flex;
-  /*flex-flow: row;*/
-  align-items: flex-start;
+  flex-direction: column;
   gap: 0.5rem;
-  padding: 1rem;
-  margin-bottom: 0.5rem;
-}
-.criterion-item.has-error {
-  border: 2px dashed red;
+  align-items: stretch;
 }
 
-.criterion-item-inner {
-  display: flex;
-  gap: 0.5rem;
+.criterion-item button {
+  align-self: flex-end;
+  margin: 0.5rem;
 }
 
-.narrow {
-  width: 100px;
+/* Desktop and larger screens */
+@media (min-width: 768px) {
+  .criterion-item {
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 0.5rem;
+  }
+
+  .criterion-item button {
+    align-self: flex-start;
+    margin: 0;
+  }
+
+  .criterion-item-inner {
+    flex: 1; /* Takes remaining space */
+  }
+
+  .criterion-item mat-form-field {
+    min-width: 120px; /* Adjust as needed */
+  }
+
+  .criterion-item button[matMiniFab] {
+    flex-shrink: 0; /* Prevents button from shrinking */
+  }
 }
 
-/* Push the last button to the right */
-.criterion-item > button:last-of-type {
-  margin-left: auto;
+/* Optional: Adjust gap for desktop */
+@media (min-width: 768px) {
+  .criterion-item {
+    gap: 12px;
+  }
 }
 
-/* Optional sizing tweaks */
-.criterion-item mat-form-field:not(.narrow) {
-  width: auto;
-  min-width: 180px;
-  flex: 0 0 auto;
-}
+/*.criterion-item {*/
+/*  display: flex;*/
+/*  flex-flow: row;*/
+/*  align-items: flex-start;*/
+/*  gap: 0.5rem;*/
+/*  padding: 1rem;*/
+/*  margin-bottom: 0.5rem;*/
+/*}*/
+/*.criterion-item.has-error {*/
+/*  border: 2px dashed red;*/
+/*}*/
 
-.criterion-item select,
-.criterion-item input[type="text"],
-.criterion-item input[type="number"],
-.criterion-item input[type="date"] {
-  flex: 0 0 auto;
-}
+/*.criterion-item-inner {*/
+/*  display: flex;*/
+/*  gap: 0.5rem;*/
+/*}*/
 
-/* Optional: keep the checkbox label inline without wrapping */
-.criterion-item label {
-  white-space: nowrap;
-}
+/*.narrow {*/
+/*  width: 100px;*/
+/*}*/
+
+/*!* Push the last button to the right *!*/
+/*.criterion-item > button:last-of-type {*/
+/*  margin-left: auto;*/
+/*}*/
+
+/*!* Optional sizing tweaks *!*/
+/*.criterion-item mat-form-field:not(.narrow) {*/
+/*  width: auto;*/
+/*  min-width: 180px;*/
+/*  flex: 0 0 auto;*/
+/*}*/
+
+/*.criterion-item select,*/
+/*.criterion-item input[type="text"],*/
+/*.criterion-item input[type="number"],*/
+/*.criterion-item input[type="date"] {*/
+/*  flex: 0 0 auto;*/
+/*}*/
+
+/*!* Optional: keep the checkbox label inline without wrapping *!*/
+/*.criterion-item label {*/
+/*  white-space: nowrap;*/
+/*}*/

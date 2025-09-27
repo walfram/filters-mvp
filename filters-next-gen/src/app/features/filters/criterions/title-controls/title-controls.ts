@@ -1,10 +1,11 @@
 import {Component, Input} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatCheckbox} from "@angular/material/checkbox";
-import {MatFormField} from "@angular/material/form-field";
+import {MatError, MatFormField} from "@angular/material/form-field";
 import {MatInput, MatLabel} from "@angular/material/input";
 import {MatOption, MatSelect} from "@angular/material/select";
 import {CriterionFormGroup} from '../../types/filter-form-group';
+import {JsonPipe} from '@angular/common';
 
 @Component({
   selector: 'app-title-controls',
@@ -16,7 +17,9 @@ import {CriterionFormGroup} from '../../types/filter-form-group';
     MatLabel,
     MatOption,
     MatSelect,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    JsonPipe,
+    MatError
   ],
   templateUrl: './title-controls.html',
   styleUrl: './title-controls.css'
