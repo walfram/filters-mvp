@@ -38,14 +38,19 @@ form {
 
 .criterion-item {
   display: flex;
-  flex-flow: row nowrap; /* keep children in one row */
-  align-items: center; /* vertically center items */
+  /*flex-flow: row;*/
+  align-items: flex-start;
   gap: 0.5rem;
   padding: 1rem;
   margin-bottom: 0.5rem;
 }
 .criterion-item.has-error {
   border: 2px dashed red;
+}
+
+.criterion-item-inner {
+  display: flex;
+  gap: 0.5rem;
 }
 
 .narrow {

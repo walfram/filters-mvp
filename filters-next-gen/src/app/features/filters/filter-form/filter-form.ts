@@ -1,7 +1,7 @@
 import {Component, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
 import {Filter} from '../types/filter';
 import {FormArray, FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
-import {MatFormField, MatHint, MatLabel} from '@angular/material/form-field';
+import {MatError, MatFormField, MatHint, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatButton, MatMiniFabButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
@@ -9,9 +9,9 @@ import {AmountCriterion, Criterion, DateCriterion, TitleCriterion} from '../type
 import {v4} from 'uuid';
 import {MatOption, MatSelect} from '@angular/material/select';
 import {MatCheckbox} from '@angular/material/checkbox';
-import {NgClass} from '@angular/common';
+import {JsonPipe, NgClass} from '@angular/common';
 import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
-import {provideNativeDateAdapter} from '@angular/material/core';
+import {dateValidator} from '../validators/date-validator';
 
 interface AmountCriterionForm {
   id: FormControl<string>;
@@ -63,11 +63,12 @@ interface FilterFormGroup {
     MatHint,
     MatDatepickerToggle,
     MatDatepicker,
-    MatDatepickerInput
+    MatDatepickerInput,
+    MatError,
+    JsonPipe
   ],
   templateUrl: './filter-form.html',
   styleUrl: './filter-form.css',
-  providers: [provideNativeDateAdapter()]
 })
 export class FilterForm implements OnInit {
 
@@ -89,7 +90,7 @@ export class FilterForm implements OnInit {
     this.form = this.formBuilder.group<FilterFormGroup>({
       id: this.formBuilder.control(this.filter.id, [Validators.required]),
       name: this.formBuilder.control(this.filter.name, [Validators.required, Validators.minLength(3), Validators.maxLength(100)]),
-      // new FormArray and not this.formBuilder.array 'cause TypeScript was going nuts
+      // new FormArray and not this.formBuilder.array 'cause TypeScript was going nuts and could not assign correct type
       criteria: new FormArray<CriterionFormGroup>(groups, [Validators.required])
     });
   }
@@ -131,7 +132,14 @@ export class FilterForm implements OnInit {
       id: this.formBuilder.control(criterion.id),
       type: this.formBuilder.control('date', [Validators.required]),
       operator: this.formBuilder.control(criterion.operator, [Validators.required]),
-      value: this.formBuilder.control(criterion.value, [Validators.required])
+      value: this.formBuilder.control(
+        criterion.value,
+        [
+          Validators.required,
+          // yes, this could be done with matInput [min]="minDate" [max]="maxDate"
+          dateValidator(new Date(2025, 1, 1), new Date(2025, 12, 31))
+        ]
+      )
     });
   }
 

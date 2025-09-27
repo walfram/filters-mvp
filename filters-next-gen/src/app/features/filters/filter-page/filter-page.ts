@@ -26,12 +26,14 @@ export class FilterPage {
     console.log('showing filter add modal');
 
     const config = new MatDialogConfig();
-    config.width = '90vw';
-    config.maxWidth = '95vw';
     config.hasBackdrop = true;
-    config.height = '90vh';
+    config.width = '80vw';
+    config.maxWidth = '95vw';
+    config.height = '80vh';
     config.maxHeight = '95vh';
-    config.panelClass = 'filter-dialog-panel';
+    config.panelClass = 'resizable-dialog';
+    config.disableClose = true;
+
     config.data = {
       filter: filter || {
         id: '',

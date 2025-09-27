@@ -25,6 +25,8 @@
           </mat-select>
         </mat-form-field>
 
+        <div class="criterion-item-inner">
+
         <!-- Operator Select (changes based on type) -->
         @switch (criterion.controls.type.value) {
           @case ('number') {
@@ -73,14 +75,20 @@
             </mat-form-field>
 
             <mat-form-field appearance="fill">
-<!--              <input matInput type="date" formControlName="value"/>-->
+              <mat-label>Choose date</mat-label>
               <input matInput [matDatepicker]="picker" formControlName="value">
               <mat-hint>DD/MM/YYYY</mat-hint>
               <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
+
+            @if (criterion.controls.value.invalid) {
+              <mat-error>{{ criterion.controls.value.errors | json }}</mat-error>
+            }
           }
         }
+
+        </div>
 
         <button matMiniFab type="button" (click)="removeCriterion(idx)">
           <mat-icon>delete</mat-icon>
