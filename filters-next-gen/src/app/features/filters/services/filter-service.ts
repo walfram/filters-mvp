@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
-import {BehaviorSubject, catchError, delay, map, Observable, of, tap} from 'rxjs';
+import {inject, Injectable} from '@angular/core';
+import {BehaviorSubject, catchError, delay, finalize, map, Observable, of, tap} from 'rxjs';
 import {v4} from 'uuid';
 import {Filter} from '../types/filter';
 import {SAMPLE_FILTERS} from '../mocks/sample-filters';
+import {LoaderService} from '../../../shared/services/loader-service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,8 @@ export class FilterService {
 
   private readonly filtersSubject = new BehaviorSubject<Filter[]>([]);
   public readonly filters$ = this.filtersSubject.asObservable();
+
+  private readonly loaderService = inject(LoaderService);
 
   constructor() {
     this.loadFilters();
@@ -22,6 +25,8 @@ export class FilterService {
   }
 
   save(filter: Filter) {
+    this.loaderService.show();
+
     const currentFilters = this.filtersSubject.getValue();
     const tempFilterId = this.tempFilterId();
 
@@ -53,7 +58,8 @@ export class FilterService {
         console.error('error saving filter', error);
         this.filtersSubject.next(currentFilters);
         throw error;
-      })
+      }),
+      finalize(() => this.loaderService.hide())
     );
   }
 
@@ -63,12 +69,15 @@ export class FilterService {
     return Math.floor(Math.random() * (maxDelay - minDelay + 1)) + minDelay;
   }
 
+  // TODO replace with actual http put
   private put(filter: Filter): Observable<Filter> {
+    console.log('updating backend', filter);
     return of(filter).pipe(
       delay(this.debugRandomDelay())
     );
   }
 
+  // TODO replace with actual http post
   private post(filter: Filter): Observable<Filter> {
     console.log('saving to backend', filter);
     const d = this.debugRandomDelay();
@@ -86,9 +95,26 @@ export class FilterService {
     return `temp-filter-${Date.now()}`;
   }
 
-  delete(filter: Filter) {
+  // TODO replace with actual http delete
+  private del(filter: Filter): Observable<Filter> {
+    return of(filter).pipe(
+      delay(this.debugRandomDelay())
+    );
+  }
+
+  delete(filter: Filter): Observable<Filter> {
+    this.loaderService.show();
+
     const currentFilters = this.filtersSubject.getValue();
     const updatedFilters = currentFilters.filter(f => f.id !== filter.id);
-    this.filtersSubject.next(updatedFilters);
+
+    return this.del(filter).pipe(
+      tap(() => this.filtersSubject.next(updatedFilters)),
+      catchError(error => {
+        console.log('could not delete filter', error);
+        throw error;
+      }),
+      finalize(() => this.loaderService.hide())
+    )
   }
 }

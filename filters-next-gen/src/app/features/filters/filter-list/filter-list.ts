@@ -8,6 +8,7 @@ import {MatIcon} from '@angular/material/icon';
 import {CriterionToStringPipe} from '../../../shared/pipes/criterion-to-string-pipe';
 import {YesNoDialog, YesNoDialogOptions} from '../../../shared/components/yes-no-dialog/yes-no-dialog';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-filter-list',
@@ -22,6 +23,8 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 })
 export class FilterList implements OnInit {
   @Input({required: true}) showFilterDialog!: (filter?: Filter) => void;
+
+  private readonly snackbar = inject(MatSnackBar);
 
   protected readonly filterService = inject(FilterService);
   protected filters$: Observable<Filter[]> | undefined;
@@ -46,7 +49,10 @@ export class FilterList implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.filterService.delete(filter);
+        this.filterService.delete(filter).subscribe({
+          next: filter => this.snackbar.open(`removed filter ${filter.id}`, 'Ok', {duration: 5000}),
+          error: error => this.snackbar.open(`error removing filter ${filter.id}, ${error.message || error}`, 'Ok', {duration: 5000}),
+        });
       } else {
         console.log('User clicked No');
         // Handle "No" action
