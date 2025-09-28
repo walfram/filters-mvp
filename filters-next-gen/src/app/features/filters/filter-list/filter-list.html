@@ -21,7 +21,7 @@
         <button matMiniFab title="Apply filter">
           <mat-icon>check_circle</mat-icon>
         </button>
-        <button matMiniFab title="Delete filter">
+        <button matMiniFab title="Delete filter" (click)="showDeleteConfirmDialog(filter)">
           <mat-icon>delete</mat-icon>
         </button>
       </div>

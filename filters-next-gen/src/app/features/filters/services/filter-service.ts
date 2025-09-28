@@ -10,6 +10,7 @@ import {SAMPLE_FILTERS} from '../mocks/sample-filters';
 export class FilterService {
 
   private readonly filtersSubject = new BehaviorSubject<Filter[]>([]);
+  public readonly filters$ = this.filtersSubject.asObservable();
 
   constructor() {
     this.loadFilters();
@@ -18,10 +19,6 @@ export class FilterService {
   private loadFilters() {
     console.log('loading filters');
     this.filtersSubject.next(SAMPLE_FILTERS);
-  }
-
-  filters(): Observable<Filter[]> {
-    return this.filtersSubject.asObservable();
   }
 
   save(filter: Filter) {
@@ -87,5 +84,11 @@ export class FilterService {
 
   private tempFilterId(): string {
     return `temp-filter-${Date.now()}`;
+  }
+
+  delete(filter: Filter) {
+    const currentFilters = this.filtersSubject.getValue();
+    const updatedFilters = currentFilters.filter(f => f.id !== filter.id);
+    this.filtersSubject.next(updatedFilters);
   }
 }
