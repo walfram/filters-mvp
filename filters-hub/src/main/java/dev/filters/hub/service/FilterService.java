@@ -22,7 +22,7 @@ public class FilterService {
             "High Value Purchases",
             true,
             List.of(
-                new AmountCondition(AmountOperator.GREATER_THEN, 500.0)
+                new AmountCriterion(UUID.randomUUID(), AmountOperator.gt, 500.0)
             )
         ),
         // Filter 2: Title and Date Conditions
@@ -31,8 +31,8 @@ public class FilterService {
             "Recent Reports",
             true,
             List.of(
-                new TitleCondition(TitleOperator.CONTAINS, "Report"),
-                new DateCondition(DateOperator.AFTER, LocalDate.now().minusMonths(3).toString()) // Last 3 months
+                new TitleCriterion(UUID.randomUUID(), TitleOperator.contains, "Report", false),
+                new DateCriterion(UUID.randomUUID(), DateOperator.after, LocalDate.now().minusMonths(3).toString()) // Last 3 months
             )
         ),
         // Filter 3: Multiple Conditions of Different Types
@@ -41,9 +41,9 @@ public class FilterService {
             "Sales Over 100 on Specific Date",
             false, // Could be an inactive filter
             List.of(
-                new AmountCondition(AmountOperator.GREATER_OR_EQUAL, 100.0),
-                new TitleCondition(TitleOperator.STARTS_WITH, "Sale"),
-                new DateCondition(DateOperator.EQUAL, "2025-06-15")
+                new AmountCriterion(UUID.randomUUID(), AmountOperator.gte, 100.0),
+                new TitleCriterion(UUID.randomUUID(), TitleOperator.startsWith, "Sale", false),
+                new DateCriterion(UUID.randomUUID(), DateOperator.equals, "2025-06-15")
             )
         ),
         // Filter 4: Only Title Condition (Case-Insensitive Example if operators allowed)
@@ -52,7 +52,7 @@ public class FilterService {
             "Customer Feedback",
             true,
             List.of(
-                new TitleCondition(TitleOperator.EQUAL, "Customer Feedback")
+                new TitleCriterion(UUID.randomUUID(), TitleOperator.eq, "Customer Feedback", false)
             )
         ),
         // Filter 5: Less Common Amount Operator & Date Before
@@ -61,8 +61,8 @@ public class FilterService {
             "Old Low Value Invoices",
             true,
             List.of(
-                new AmountCondition(AmountOperator.LESS_OR_EQUAL, 75.0),
-                new DateCondition(DateOperator.BEFORE, "2024-12-31")
+                new AmountCriterion(UUID.randomUUID(), AmountOperator.lte, 75.0),
+                new DateCriterion(UUID.randomUUID(), DateOperator.before, "2024-12-31")
             )
         )
     );
@@ -73,6 +73,6 @@ public class FilterService {
   }
 
   public void delete(UUID filterId) {
-
+		throw new UnsupportedOperationException("Not yet implemented");
   }
 }

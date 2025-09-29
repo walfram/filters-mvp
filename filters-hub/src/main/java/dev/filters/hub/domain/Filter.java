@@ -12,14 +12,15 @@ public record Filter(
     UUID id,
     @NotBlank String name,
     @NotNull Boolean active,
-    @NotEmpty List<@NotNull @Valid Condition> conditions
+    @NotEmpty List<@NotNull @Valid Criterion> criteria
 ) {
   public Filter(UUID id, @Valid Filter filter) {
     this(
         id,
         filter.name(),
         filter.active(),
-        filter.conditions()
+        filter.criteria()
     );
   }
+
 }

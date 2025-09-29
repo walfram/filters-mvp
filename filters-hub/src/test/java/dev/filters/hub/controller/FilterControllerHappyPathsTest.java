@@ -34,7 +34,7 @@ public class FilterControllerHappyPathsTest {
 
   @Test
   void should_return_ok_for_update_filter_request_with_extra_fields() throws Exception {
-    String payload = "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"foo\": \"bar\", \"name\": \"Updated High Value Transactions\", \"active\": true, \"conditions\": [ { \"type\": \"amount\", \"operator\": \"GREATER_THEN\", \"value\": 1500.0 } ] }";
+    String payload = "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"foo\": \"bar\", \"name\": \"Updated High Value Transactions\", \"active\": true, \"criteria\": [ { \"type\": \"amount\", \"operator\": \"GREATER_THEN\", \"value\": 1500.0 } ] }";
 
     when(filterService.update(any(UUID.class), any(Filter.class))).thenReturn(mapper.readValue(payload, Filter.class));
 
@@ -50,7 +50,7 @@ public class FilterControllerHappyPathsTest {
 
   @Test
   void should_return_ok_for_create_filter_request_with_extra_fields() throws Exception {
-    String payload = "{ \"foo\": \"bar\", \"name\": \"Updated High Value Transactions\", \"active\": true, \"conditions\": [ { \"type\": \"amount\", \"operator\": \"GREATER_THEN\", \"value\": 1500.0 } ] }";
+    String payload = "{ \"foo\": \"bar\", \"name\": \"Updated High Value Transactions\", \"active\": true, \"criteria\": [ { \"type\": \"amount\", \"operator\": \"GREATER_THEN\", \"value\": 1500.0 } ] }";
 
     UUID id = UUID.randomUUID();
     Filter filter = mapper.readValue(payload, Filter.class);
@@ -89,17 +89,17 @@ public class FilterControllerHappyPathsTest {
   @ParameterizedTest
   @ValueSource(strings = {
       // Update Filter: with 1 amount condition
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Updated High Value Transactions\", \"active\": true, \"conditions\": [ { \"type\": \"amount\", \"operator\": \"GREATER_THEN\", \"value\": 1500.0 } ] }",
-      // Update Filter: with amount and title conditions
-      "{ \"id\": \"b1cdef00-1d2e-3f4a-5b6c-7d8e9f0a1b2c\", \"name\": \"Updated Invoice Filter\", \"active\": true, \"conditions\": [ { \"type\": \"amount\", \"operator\": \"LESS_OR_EQUAL\", \"value\": 600.0 }, { \"type\": \"title\", \"operator\": \"CONTAINS\", \"value\": \"receipt\" } ] }",
-      // Update Filter: with amount, title, and date conditions
-      "{ \"id\": \"c2d3e4f5-6a7b-8c9d-0e1f-2a3b4c5d6e7f\", \"name\": \"Updated Recent Large Reports\", \"active\": false, \"conditions\": [ { \"type\": \"amount\", \"operator\": \"GREATER_OR_EQUAL\", \"value\": 250.0 }, { \"type\": \"title\", \"operator\": \"STARTS_WITH\", \"value\": \"Revised Report\" }, { \"type\": \"date\", \"operator\": \"AFTER\", \"value\": \"2024-06-01\" } ] }",
+      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Updated High Value Transactions\", \"active\": true, \"criteria\": [ { \"type\": \"amount\", \"operator\": \"GREATER_THEN\", \"value\": 1500.0 } ] }",
+      // Update Filter: with amount and title criteria
+      "{ \"id\": \"b1cdef00-1d2e-3f4a-5b6c-7d8e9f0a1b2c\", \"name\": \"Updated Invoice Filter\", \"active\": true, \"criteria\": [ { \"type\": \"amount\", \"operator\": \"LESS_OR_EQUAL\", \"value\": 600.0 }, { \"type\": \"title\", \"operator\": \"CONTAINS\", \"value\": \"receipt\" } ] }",
+      // Update Filter: with amount, title, and date criteria
+      "{ \"id\": \"c2d3e4f5-6a7b-8c9d-0e1f-2a3b4c5d6e7f\", \"name\": \"Updated Recent Large Reports\", \"active\": false, \"criteria\": [ { \"type\": \"amount\", \"operator\": \"GREATER_OR_EQUAL\", \"value\": 250.0 }, { \"type\": \"title\", \"operator\": \"STARTS_WITH\", \"value\": \"Revised Report\" }, { \"type\": \"date\", \"operator\": \"AFTER\", \"value\": \"2024-06-01\" } ] }",
       // Update Filter: with 1 title condition
-      "{ \"id\": \"d3e4f5a6-7b8c-9d0e-1f2a-3b4c5d6e7f8a\", \"name\": \"Updated Marketing Emails\", \"active\": false, \"conditions\": [ { \"type\": \"title\", \"operator\": \"ENDS_WITH\", \"value\": \"newsletter\" } ] }",
+      "{ \"id\": \"d3e4f5a6-7b8c-9d0e-1f2a-3b4c5d6e7f8a\", \"name\": \"Updated Marketing Emails\", \"active\": false, \"criteria\": [ { \"type\": \"title\", \"operator\": \"ENDS_WITH\", \"value\": \"newsletter\" } ] }",
       // Update Filter: with 1 date condition
-      "{ \"id\": \"e4f5a6b7-8c9d-0e1f-2a3b-4c5d6e7f8a9b\", \"name\": \"Updated Last Month's Entries\", \"active\": false, \"conditions\": [ { \"type\": \"date\", \"operator\": \"BEFORE\", \"value\": \"2025-06-01\" } ] }",
+      "{ \"id\": \"e4f5a6b7-8c9d-0e1f-2a3b-4c5d6e7f8a9b\", \"name\": \"Updated Last Month's Entries\", \"active\": false, \"criteria\": [ { \"type\": \"date\", \"operator\": \"BEFORE\", \"value\": \"2025-06-01\" } ] }",
       // Update Filter: with all condition types
-      "{ \"id\": \"f5a6b7c8-9d0e-1f2a-3b4c-5d6e7f8a9b0c\", \"name\": \"Updated All Condition Types Example\", \"active\": false, \"conditions\": [ { \"type\": \"amount\", \"operator\": \"LESS_THEN\", \"value\": 50.0 }, { \"type\": \"title\", \"operator\": \"CONTAINS\", \"value\": \"New Item\" }, { \"type\": \"date\", \"operator\": \"EQUAL\", \"value\": \"2025-07-07\" } ] }"
+      "{ \"id\": \"f5a6b7c8-9d0e-1f2a-3b4c-5d6e7f8a9b0c\", \"name\": \"Updated All Condition Types Example\", \"active\": false, \"criteria\": [ { \"type\": \"amount\", \"operator\": \"LESS_THEN\", \"value\": 50.0 }, { \"type\": \"title\", \"operator\": \"CONTAINS\", \"value\": \"New Item\" }, { \"type\": \"date\", \"operator\": \"EQUAL\", \"value\": \"2025-07-07\" } ] }"
   })
   void should_return_200_for_update_filter_valid_payload(String validPayload) throws Exception {
     JsonNode root = mapper.readTree(validPayload);
@@ -120,17 +120,17 @@ public class FilterControllerHappyPathsTest {
   @ParameterizedTest
   @ValueSource(strings = {
       // Create Filter: with 1 amount condition
-      "{ \"name\": \"High Value Transactions\", \"active\": true, \"conditions\": [ { \"type\": \"amount\", \"operator\": \"GREATER_THEN\", \"value\": 1000.0 } ] }",
-      // Create Filter: with amount and title conditions
-      "{ \"name\": \"Invoice Filter (Amount & Title)\", \"active\": false, \"conditions\": [ { \"type\": \"amount\", \"operator\": \"LESS_OR_EQUAL\", \"value\": 500.0 }, { \"type\": \"title\", \"operator\": \"CONTAINS\", \"value\": \"invoice\" } ] }",
-      // Create Filter: with amount, title, and date conditions
-      "{ \"name\": \"Recent Large Reports\", \"active\": true, \"conditions\": [ { \"type\": \"amount\", \"operator\": \"GREATER_OR_EQUAL\", \"value\": 200.0 }, { \"type\": \"title\", \"operator\": \"STARTS_WITH\", \"value\": \"Report\" }, { \"type\": \"date\", \"operator\": \"AFTER\", \"value\": \"2024-01-01\" } ] }",
+      "{ \"name\": \"High Value Transactions\", \"active\": true, \"criteria\": [ { \"type\": \"amount\", \"operator\": \"GREATER_THEN\", \"value\": 1000.0 } ] }",
+      // Create Filter: with amount and title criteria
+      "{ \"name\": \"Invoice Filter (Amount & Title)\", \"active\": false, \"criteria\": [ { \"type\": \"amount\", \"operator\": \"LESS_OR_EQUAL\", \"value\": 500.0 }, { \"type\": \"title\", \"operator\": \"CONTAINS\", \"value\": \"invoice\" } ] }",
+      // Create Filter: with amount, title, and date criteria
+      "{ \"name\": \"Recent Large Reports\", \"active\": true, \"criteria\": [ { \"type\": \"amount\", \"operator\": \"GREATER_OR_EQUAL\", \"value\": 200.0 }, { \"type\": \"title\", \"operator\": \"STARTS_WITH\", \"value\": \"Report\" }, { \"type\": \"date\", \"operator\": \"AFTER\", \"value\": \"2024-01-01\" } ] }",
       // Create Filter: with 1 title condition
-      "{ \"name\": \"Marketing Emails\", \"active\": true, \"conditions\": [ { \"type\": \"title\", \"operator\": \"ENDS_WITH\", \"value\": \"marketing\" } ] }",
+      "{ \"name\": \"Marketing Emails\", \"active\": true, \"criteria\": [ { \"type\": \"title\", \"operator\": \"ENDS_WITH\", \"value\": \"marketing\" } ] }",
       // Create Filter: with 1 date condition
-      "{ \"name\": \"Last Month's Entries\", \"active\": true, \"conditions\": [ { \"type\": \"date\", \"operator\": \"BEFORE\", \"value\": \"2025-07-01\" } ] }",
+      "{ \"name\": \"Last Month's Entries\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"BEFORE\", \"value\": \"2025-07-01\" } ] }",
       // Create Filter: with all condition types
-      "{ \"name\": \"All Condition Types Example\", \"active\": true, \"conditions\": [ { \"type\": \"amount\", \"operator\": \"EQUAL\", \"value\": 99.99 }, { \"type\": \"title\", \"operator\": \"EQUAL\", \"value\": \"Specific Item\" }, { \"type\": \"date\", \"operator\": \"EQUAL\", \"value\": \"2025-07-06\" } ] }"
+      "{ \"name\": \"All Condition Types Example\", \"active\": true, \"criteria\": [ { \"type\": \"amount\", \"operator\": \"EQUAL\", \"value\": 99.99 }, { \"type\": \"title\", \"operator\": \"EQUAL\", \"value\": \"Specific Item\" }, { \"type\": \"date\", \"operator\": \"EQUAL\", \"value\": \"2025-07-06\" } ] }"
   })
   void should_return_201_for_create_filter_valid_payload(String validPayload) throws Exception {
     UUID id = UUID.randomUUID();

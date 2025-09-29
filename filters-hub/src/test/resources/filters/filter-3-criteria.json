@@ -1,0 +1,27 @@
+{
+  "id": "f47ac10b-58cc-4372-a567-0e02b2c3d491",
+  "name": "Tech Department Search",
+  "criteria": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440027",
+      "type": "string",
+      "operator": "contains",
+      "value": "tech",
+      "caseSensitive": false
+    },
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440028",
+      "type": "string",
+      "operator": "contains",
+      "value": "engineer",
+      "caseSensitive": false
+    },
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440029",
+      "type": "string",
+      "operator": "contains",
+      "value": "developer",
+      "caseSensitive": false
+    }
+  ]
+}

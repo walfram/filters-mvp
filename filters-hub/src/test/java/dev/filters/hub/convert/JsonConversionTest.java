@@ -2,6 +2,7 @@ package dev.filters.hub.convert;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.UUID;
 
 import dev.filters.hub.domain.*;
 import org.junit.jupiter.api.Test;
@@ -24,16 +25,16 @@ public class JsonConversionTest {
     assertEquals("Sample Filter", filter.name());
     assertTrue(filter.active());
     
-    assertEquals(3, filter.conditions().size());
+    assertEquals(3, filter.criteria().size());
     
-    Condition first = filter.conditions().get(0);
-    assertEquals(new AmountCondition(AmountOperator.GREATER_THEN, 100.0), first);
+    Criterion first = filter.criteria().get(0);
+    assertEquals(new AmountCriterion(UUID.randomUUID(), AmountOperator.gt, 100.0), first);
     
-    Condition second = filter.conditions().get(1);
-    assertEquals(new TitleCondition(TitleOperator.CONTAINS, "example"), second);
+    Criterion second = filter.criteria().get(1);
+    assertEquals(new TitleCriterion(UUID.randomUUID(), TitleOperator.contains, "example", false), second);
     
-    Condition third = filter.conditions().get(2);
-    assertEquals(new DateCondition(DateOperator.AFTER, "2025-07-03"), third);
+    Criterion third = filter.criteria().get(2);
+    assertEquals(new DateCriterion(UUID.randomUUID(), DateOperator.after, "2025-07-03"), third);
   }
 
 }

@@ -1,0 +1,37 @@
+{
+  "id": "f47ac10b-58cc-4372-a567-0e02b2c3d492",
+  "name": "Q4 Financial Report",
+  "criteria": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440030",
+      "type": "date",
+      "operator": "after",
+      "value": "2024-10-01T00:00:00.000Z"
+    },
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440031",
+      "type": "date",
+      "operator": "before",
+      "value": "2024-12-31T00:00:00.000Z"
+    },
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440032",
+      "type": "number",
+      "operator": "gte",
+      "value": 1000000
+    },
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440033",
+      "type": "string",
+      "operator": "eq",
+      "value": "approved",
+      "caseSensitive": false
+    },
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440034",
+      "type": "number",
+      "operator": "lte",
+      "value": 5000000
+    }
+  ]
+}

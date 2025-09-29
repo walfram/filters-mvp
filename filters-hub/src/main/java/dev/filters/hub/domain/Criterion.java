@@ -9,9 +9,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     property = "type"
 )
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = AmountCondition.class, name = "amount"),
-    @JsonSubTypes.Type(value = TitleCondition.class, name = "title"),
-    @JsonSubTypes.Type(value = DateCondition.class, name = "date")
+    @JsonSubTypes.Type(value = AmountCriterion.class, name = "number"),
+    @JsonSubTypes.Type(value = TitleCriterion.class, name = "string"),
+    @JsonSubTypes.Type(value = DateCriterion.class, name = "date")
 })
-public interface Condition {
+public interface Criterion {
 }
