@@ -1,19 +1,20 @@
 {
     "name": "Sample Filter",
-    "conditions": [
+    "criteria": [
         {
-            "type": "amount",
-            "operator": "GREATER_THEN",
+            "type": "number",
+            "operator": "gt",
             "value": 100.0
         },
         {
-            "type": "title",
-            "operator": "CONTAINS",
-            "value": "example"
+            "type": "string",
+            "operator": "contains",
+            "value": "example",
+            "caseSensitive": false
         },
         {
             "type": "date",
-            "operator": "AFTER",
+            "operator": "after",
             "value": "2025-07-03"
         }
     ],

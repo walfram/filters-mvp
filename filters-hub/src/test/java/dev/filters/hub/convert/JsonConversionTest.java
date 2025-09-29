@@ -28,13 +28,13 @@ public class JsonConversionTest {
     assertEquals(3, filter.criteria().size());
     
     Criterion first = filter.criteria().get(0);
-    assertEquals(new AmountCriterion(UUID.randomUUID(), AmountOperator.gt, 100.0), first);
+    assertEquals(new AmountCriterion(null, AmountOperator.gt, 100.0), first);
     
     Criterion second = filter.criteria().get(1);
-    assertEquals(new TitleCriterion(UUID.randomUUID(), TitleOperator.contains, "example", false), second);
+    assertEquals(new TitleCriterion(null, TitleOperator.contains, "example", false), second);
     
     Criterion third = filter.criteria().get(2);
-    assertEquals(new DateCriterion(UUID.randomUUID(), DateOperator.after, "2025-07-03"), third);
+    assertEquals(new DateCriterion(null, DateOperator.after, "2025-07-03"), third);
   }
 
 }
