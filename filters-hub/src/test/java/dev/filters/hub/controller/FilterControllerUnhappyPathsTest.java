@@ -65,6 +65,8 @@ public class FilterControllerUnhappyPathsTest {
       "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"EQUAL\", \"value\": \"2023-01\" } ] }",
       // Filter with DateCondition: invalid date format (extra characters)
       "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"EQUAL\", \"value\": \"2023-01-01x\" } ] }",
+			// Filter with DateCondition: invalid date format (ISO timestamp with time zone is not allowed)
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"EQUAL\", \"value\": \"2024-10-01T00:00:00.000Z\" } ] }",
       // Filter with TitleCondition: null operator
       "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"string\", \"operator\": null, \"value\": \"some title\" } ] }",
       // Filter with TitleCondition: blank value
