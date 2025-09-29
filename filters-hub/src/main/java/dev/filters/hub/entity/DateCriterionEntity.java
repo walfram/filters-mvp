@@ -6,7 +6,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.time.Instant;
+import java.time.LocalDate;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -17,6 +17,6 @@ public class DateCriterionEntity extends CriterionEntity {
 	private String operator;
 
 	@Column(name = "date_value")
-	private Instant value;
+	private LocalDate value;
 
 }

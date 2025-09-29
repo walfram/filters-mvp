@@ -80,6 +80,7 @@ public class FilterRepositoryTest {
 
 	}
 
+	@Test
 	void should_delete_filter() {
 
 	}

@@ -6,7 +6,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 @Component
@@ -20,6 +20,7 @@ public class FilterMapper {
 		entity.setActive(filter.active());
 
 		entity.setCriteria( filter.criteria().stream().map(this::toCriterionEntity).toList() );
+		entity.getCriteria().forEach(criterionEntity -> criterionEntity.setFilter(entity));
 
 		return entity;
 	}
@@ -37,7 +38,7 @@ public class FilterMapper {
 		DateCriterionEntity entity = new DateCriterionEntity();
 
 		entity.setOperator(dateCriterion.operator().name());
-		entity.setValue(Instant.parse(dateCriterion.value()));
+		entity.setValue(LocalDate.parse(dateCriterion.value()));
 
 		return entity;
 	}
@@ -47,6 +48,7 @@ public class FilterMapper {
 
 		entity.setOperator(titleCriterion.operator().name());
 		entity.setValue(titleCriterion.value());
+		entity.setCaseSensitive(titleCriterion.caseSensitive());
 
 		return entity;
 	}

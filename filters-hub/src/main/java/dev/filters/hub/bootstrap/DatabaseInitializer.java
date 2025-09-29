@@ -34,8 +34,9 @@ public class DatabaseInitializer implements CommandLineRunner {
 
 			List<FilterEntity> entities = sampleFilters()
 					.stream()
+					.peek(filter -> logger.debug("filter = {}", filter))
 					.map(filterMapper::toEntity)
-					.peek(filter -> logger.info("saving filter = {}", filter))
+					.peek(filterEntity -> logger.info("saved filter = {}", filterEntity))
 					.toList();
 
 			filterEntityRepository.saveAll(entities);
@@ -46,51 +47,51 @@ public class DatabaseInitializer implements CommandLineRunner {
 		return List.of(
 				// Filter 1: Simple Amount Condition
 				new Filter(
-						UUID.randomUUID(),
+						null,
 						"High Value Purchases",
 						true,
 						List.of(
-								new AmountCriterion(UUID.randomUUID(), AmountOperator.gt, 500.0)
+								new AmountCriterion(null, AmountOperator.gt, 500.0)
 						)
 				),
 				// Filter 2: Title and Date Conditions
 				new Filter(
-						UUID.randomUUID(),
+						null,
 						"Recent Reports",
 						true,
 						List.of(
-								new TitleCriterion(UUID.randomUUID(), TitleOperator.contains, "Report", false),
-								new DateCriterion(UUID.randomUUID(), DateOperator.after, LocalDate.now().minusMonths(3).toString()) // Last 3 months
+								new TitleCriterion(null, TitleOperator.contains, "Report", false),
+								new DateCriterion(null, DateOperator.after, LocalDate.now().minusMonths(3).toString()) // Last 3 months
 						)
 				),
 				// Filter 3: Multiple Conditions of Different Types
 				new Filter(
-						UUID.randomUUID(),
+						null,
 						"Sales Over 100 on Specific Date",
 						false, // Could be an inactive filter
 						List.of(
-								new AmountCriterion(UUID.randomUUID(), AmountOperator.gte, 100.0),
-								new TitleCriterion(UUID.randomUUID(), TitleOperator.startsWith, "Sale", false),
-								new DateCriterion(UUID.randomUUID(), DateOperator.equals, "2025-06-15")
+								new AmountCriterion(null, AmountOperator.gte, 100.0),
+								new TitleCriterion(null, TitleOperator.startsWith, "Sale", false),
+								new DateCriterion(null, DateOperator.equals, "2025-06-15")
 						)
 				),
 				// Filter 4: Only Title Condition (Case-Insensitive Example if operators allowed)
 				new Filter(
-						UUID.randomUUID(),
+						null,
 						"Customer Feedback",
 						true,
 						List.of(
-								new TitleCriterion(UUID.randomUUID(), TitleOperator.eq, "Customer Feedback", false)
+								new TitleCriterion(null, TitleOperator.eq, "Customer Feedback", false)
 						)
 				),
 				// Filter 5: Less Common Amount Operator & Date Before
 				new Filter(
-						UUID.randomUUID(),
+						null,
 						"Old Low Value Invoices",
 						true,
 						List.of(
-								new AmountCriterion(UUID.randomUUID(), AmountOperator.lte, 75.0),
-								new DateCriterion(UUID.randomUUID(), DateOperator.before, "2024-12-31")
+								new AmountCriterion(null, AmountOperator.lte, 75.0),
+								new DateCriterion(null, DateOperator.before, "2024-12-31")
 						)
 				)
 		);
