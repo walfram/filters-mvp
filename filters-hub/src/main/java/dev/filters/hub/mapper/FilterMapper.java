@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -19,7 +20,7 @@ public class FilterMapper {
 		entity.setName(filter.name());
 		entity.setActive(filter.active());
 
-		entity.setCriteria( filter.criteria().stream().map(this::toCriterionEntity).toList() );
+		entity.setCriteria( new ArrayList<>(filter.criteria().stream().map(this::toCriterionEntity).toList()) );
 		entity.getCriteria().forEach(criterionEntity -> criterionEntity.setFilter(entity));
 
 		return entity;

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.filters.hub.domain.Filter;
 import dev.filters.hub.entity.FilterEntity;
 import dev.filters.hub.mapper.FilterMapper;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -50,7 +51,7 @@ public class FilterRepositoryTest {
 						Resource resource = new ClassPathResource(filePath);
 						Filter filter = objectMapper.readValue(resource.getInputStream(), Filter.class);
 
-						return Arguments.of(resource.getFilename(), filter);
+						return Arguments.of(filter);
 					} catch (IOException e) {
 						throw new RuntimeException("Failed to read JSON file: " + filePath, e);
 					}
@@ -59,7 +60,7 @@ public class FilterRepositoryTest {
 
 	@ParameterizedTest
 	@MethodSource("jsonContentProvider")
-	void should_save_new_filter(String fileName, Filter filter) {
+	void should_save_new_filter(Filter filter) {
 		FilterEntity filterEntity = filterMapper.toEntity(filter);
 
 		// saving new - must not have id
@@ -74,9 +75,33 @@ public class FilterRepositoryTest {
 		assertEquals(filterEntity, found);
 	}
 
-	@Test
-	void should_update_filter() {
+	@ParameterizedTest
+	@MethodSource("jsonContentProvider")
+	@Transactional
+	void should_update_filter(Filter filter) {
+		FilterEntity filterEntity = filterMapper.toEntity(filter);
 
+		filterEntity.setId(null);
+
+		FilterEntity saved = assertDoesNotThrow(() -> repository.save(filterEntity));
+
+		assertNotNull(saved.getId());
+
+		if (saved.getCriteria().size() > 1) {
+			saved.getCriteria().removeFirst();
+		} else {
+			saved.setName("Updated " + saved.getName());
+		}
+
+		FilterEntity updated = assertDoesNotThrow(() -> repository.save(saved));
+
+		if (filter.criteria().size() > 1) {
+			assertEquals(filter.criteria().size() - 1, updated.getCriteria().size());
+		} else {
+			assertEquals("Updated " + filter.name(), updated.getName());
+		}
+
+		assertEquals(saved.getId(), updated.getId());
 	}
 
 	@Test

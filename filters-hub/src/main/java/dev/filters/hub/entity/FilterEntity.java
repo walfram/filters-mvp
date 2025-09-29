@@ -3,6 +3,7 @@ package dev.filters.hub.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,6 +26,6 @@ public class FilterEntity {
 			orphanRemoval = true,
 			fetch = FetchType.LAZY
 	)
-	private List<CriterionEntity> criteria;
+	private List<CriterionEntity> criteria = new ArrayList<>();
 
 }

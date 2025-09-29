@@ -34,9 +34,9 @@ public class DatabaseInitializer implements CommandLineRunner {
 
 			List<FilterEntity> entities = sampleFilters()
 					.stream()
-					.peek(filter -> logger.debug("filter = {}", filter))
+					.peek(filter -> logger.debug("sample filter = {}", filter))
 					.map(filterMapper::toEntity)
-					.peek(filterEntity -> logger.info("saved filter = {}", filterEntity))
+					.peek(filterEntity -> logger.info("saved sample filter = {}", filterEntity))
 					.toList();
 
 			filterEntityRepository.saveAll(entities);
