@@ -12,20 +12,19 @@ import java.util.UUID;
 public class FilterEntity {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.UUID)
 	private UUID id;
 
-	private String name; // Matches 'name: string' in Filter
+	private String name;
 
 	private Boolean active;
 
-	// One-to-Many relationship with criteria
 	@OneToMany(
 			mappedBy = "filter",
-			cascade = CascadeType.ALL, // Persist criteria when saving the filter
-			orphanRemoval = true,      // Remove criteria if they're removed from the list
+			cascade = CascadeType.ALL,
+			orphanRemoval = true,
 			fetch = FetchType.LAZY
 	)
-	private List<CriterionEntity> criteria; // Matches 'criteria: Criterion[]'
+	private List<CriterionEntity> criteria;
 
 }

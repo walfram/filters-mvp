@@ -48,10 +48,7 @@ public class FilterRepositoryTest {
 		return Stream.of(JSON_FILES)
 				.map(filePath -> {
 					try {
-						// Read the JSON file content
 						Resource resource = new ClassPathResource(filePath);
-//						byte[] contentBytes = FileCopyUtils.copyToByteArray(resource.getInputStream());
-//						String content = new String(contentBytes, StandardCharsets.UTF_8);
 						Filter filter = objectMapper.readValue(resource.getInputStream(), Filter.class);
 
 						return Arguments.of(resource.getFilename(), filter);
@@ -63,9 +60,11 @@ public class FilterRepositoryTest {
 
 	@ParameterizedTest
 	@MethodSource("jsonContentProvider")
-		// TODO strip uuids (new filter)
 	void should_save_new_filter(String fileName, Filter filter) {
 		FilterEntity filterEntity = filterMapper.toEntity(filter);
+
+		// saving new - must not have id
+		filterEntity.setId(null);
 
 		FilterEntity entity = assertDoesNotThrow(() -> repository.save(filterEntity));
 
