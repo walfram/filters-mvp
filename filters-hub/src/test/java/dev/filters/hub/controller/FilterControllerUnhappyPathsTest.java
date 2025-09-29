@@ -52,9 +52,9 @@ public class FilterControllerUnhappyPathsTest {
       // Filter: null criteria list
       "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Valid Filter\", \"active\": true, \"criteria\": null }",
       // Filter with AmountCondition: null operator
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Amount\", \"active\": true, \"criteria\": [ { \"type\": \"amount\", \"operator\": null, \"value\": 10.0 } ] }",
+      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Amount\", \"active\": true, \"criteria\": [ { \"type\": \"number\", \"operator\": null, \"value\": 10.0 } ] }",
       // Filter with AmountCondition: null value
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Amount\", \"active\": true, \"criteria\": [ { \"type\": \"amount\", \"operator\": \"EQUAL\", \"value\": null } ] }",
+      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Amount\", \"active\": true, \"criteria\": [ { \"type\": \"number\", \"operator\": \"EQUAL\", \"value\": null } ] }",
       // Filter with DateCondition: null operator
       "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": null, \"value\": \"2023-01-01\" } ] }",
       // Filter with DateCondition: blank value
@@ -66,13 +66,13 @@ public class FilterControllerUnhappyPathsTest {
       // Filter with DateCondition: invalid date format (extra characters)
       "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"EQUAL\", \"value\": \"2023-01-01x\" } ] }",
       // Filter with TitleCondition: null operator
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"title\", \"operator\": null, \"value\": \"some title\" } ] }",
+      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"string\", \"operator\": null, \"value\": \"some title\" } ] }",
       // Filter with TitleCondition: blank value
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"title\", \"operator\": \"CONTAINS\", \"value\": \"\" } ] }",
+      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"string\", \"operator\": \"contains\", \"value\": \"\" } ] }",
       // Filter with TitleCondition: null value
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"title\", \"operator\": \"CONTAINS\", \"value\": null } ] }",
+      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"string\", \"operator\": \"contains\", \"value\": null } ] }",
       // Filter with multiple invalid criteria (one of each type)
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Multiple Invalid Conditions\", \"active\": true, \"criteria\": [ { \"type\": \"amount\", \"operator\": null, \"value\": 10.0 }, { \"type\": \"date\", \"operator\": \"EQUAL\", \"value\": \"invalid-date\" }, { \"type\": \"title\", \"operator\": \"CONTAINS\", \"value\": \"\" } ] }",
+      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Multiple Invalid Conditions\", \"active\": true, \"criteria\": [ { \"type\": \"number\", \"operator\": null, \"value\": 10.0 }, { \"type\": \"date\", \"operator\": \"equals\", \"value\": \"invalid-date\" }, { \"type\": \"string\", \"operator\": \"contains\", \"value\": \"\" } ] }",
       // Filter with valid top-level fields but a null condition in the list
       "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Valid Filter Name\", \"active\": true, \"criteria\": [null] }"
   })
@@ -107,29 +107,29 @@ public class FilterControllerUnhappyPathsTest {
       // Filter: null criteria list
       "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Valid Filter\", \"active\": true, \"criteria\": null }",
       // Filter with AmountCondition: null operator
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Amount\", \"active\": true, \"criteria\": [ { \"type\": \"amount\", \"operator\": null, \"value\": 10.0 } ] }",
+      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Amount\", \"active\": true, \"criteria\": [ { \"type\": \"number\", \"operator\": null, \"value\": 10.0 } ] }",
       // Filter with AmountCondition: null value
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Amount\", \"active\": true, \"criteria\": [ { \"type\": \"amount\", \"operator\": \"EQUAL\", \"value\": null } ] }",
+      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Amount\", \"active\": true, \"criteria\": [ { \"type\": \"number\", \"operator\": \"eq\", \"value\": null } ] }",
       // Filter with DateCondition: null operator
       "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": null, \"value\": \"2023-01-01\" } ] }",
       // Filter with DateCondition: blank value
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"EQUAL\", \"value\": \"\" } ] }",
+      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"equals\", \"value\": \"\" } ] }",
       // Filter with DateCondition: null value
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"EQUAL\", \"value\": null } ] }",
+      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"equals\", \"value\": null } ] }",
       // Filter with DateCondition: value is omitted
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"EQUAL\" } ] }",
+      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"equals\" } ] }",
       // Filter with DateCondition: invalid date format (missing day)
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"EQUAL\", \"value\": \"2023-01\" } ] }",
+      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"equals\", \"value\": \"2023-01\" } ] }",
       // Filter with DateCondition: invalid date format (extra characters)
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"EQUAL\", \"value\": \"2023-01-01x\" } ] }",
+      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"equals\", \"value\": \"2023-01-01x\" } ] }",
       // Filter with TitleCondition: null operator
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"title\", \"operator\": null, \"value\": \"some title\" } ] }",
+      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"string\", \"operator\": null, \"value\": \"some title\" } ] }",
       // Filter with TitleCondition: blank value
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"title\", \"operator\": \"CONTAINS\", \"value\": \"\" } ] }",
+      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"string\", \"operator\": \"contains\", \"value\": \"\" } ] }",
       // Filter with TitleCondition: null value
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"title\", \"operator\": \"CONTAINS\", \"value\": null } ] }",
+      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"string\", \"operator\": \"contains\", \"value\": null } ] }",
       // Filter with multiple invalid criteria (one of each type)
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Multiple Invalid Conditions\", \"active\": true, \"criteria\": [ { \"type\": \"amount\", \"operator\": null, \"value\": 10.0 }, { \"type\": \"date\", \"operator\": \"EQUAL\", \"value\": \"invalid-date\" }, { \"type\": \"title\", \"operator\": \"CONTAINS\", \"value\": \"\" } ] }",
+      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Multiple Invalid Conditions\", \"active\": true, \"criteria\": [ { \"type\": \"number\", \"operator\": null, \"value\": 10.0 }, { \"type\": \"date\", \"operator\": \"equals\", \"value\": \"invalid-date\" }, { \"type\": \"string\", \"operator\": \"contains\", \"value\": \"\" } ] }",
       // Filter with valid top-level fields but a null condition in the list
       "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Valid Filter Name\", \"active\": true, \"criteria\": [null] }"
   })
