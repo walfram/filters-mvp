@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @JsonTypeName("title")
 public record TitleCriterion(
-		@NotNull UUID id,
+		UUID id,
     @NotNull TitleOperator operator,
     @NotBlank String value,
 		Boolean caseSensitive

@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @JsonTypeName("amount")
 public record AmountCriterion(
-		@NotNull UUID id,
+		UUID id,
     @NotNull AmountOperator operator,
     @NotNull Double value
 ) implements Criterion {}
