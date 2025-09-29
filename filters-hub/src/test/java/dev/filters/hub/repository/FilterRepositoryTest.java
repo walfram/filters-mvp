@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.filters.hub.domain.Filter;
 import dev.filters.hub.entity.FilterEntity;
 import dev.filters.hub.mapper.FilterMapper;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -102,9 +101,15 @@ public class FilterRepositoryTest {
 		assertEquals(saved.getId(), updated.getId());
 	}
 
-	@Test
-	void should_delete_filter() {
+	@ParameterizedTest
+	@MethodSource("jsonContentProvider")
+	void should_delete_filter(Filter filter) {
+		FilterEntity entity = filterMapper.toEntity(filter);
+		entity.setId(null);
 
+		FilterEntity saved = assertDoesNotThrow(() -> repository.save(entity));
+
+		assertDoesNotThrow(() -> repository.delete(saved));
 	}
 
 }
