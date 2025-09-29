@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.filters.hub.domain.Filter;
 import dev.filters.hub.entity.FilterEntity;
 import dev.filters.hub.mapper.FilterMapper;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -77,7 +76,6 @@ public class FilterRepositoryTest {
 
 	@ParameterizedTest
 	@MethodSource("jsonContentProvider")
-	@Transactional
 	void should_update_filter(Filter filter) {
 		FilterEntity filterEntity = filterMapper.toEntity(filter);
 
