@@ -22,7 +22,7 @@ public class FilterController {
 
   @GetMapping("/filter")
   public ResponseEntity<List<Filter>> filters() {
-    return ResponseEntity.ok(filterService.allFilter());
+    return ResponseEntity.ok(filterService.allFilters());
   }
 
   @PostMapping("/filter")

@@ -68,7 +68,7 @@ public class DatabaseInitializer implements CommandLineRunner {
 				new Filter(
 						null,
 						"Sales Over 100 on Specific Date",
-						false, // Could be an inactive filter
+						false,
 						List.of(
 								new AmountCriterion(null, AmountOperator.gte, 100.0),
 								new TitleCriterion(null, TitleOperator.startsWith, "Sale", false),

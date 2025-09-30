@@ -20,7 +20,7 @@ public class FilterMapper {
 		entity.setName(filter.name());
 		entity.setActive(filter.active());
 
-		entity.setCriteria( new ArrayList<>(filter.criteria().stream().map(this::toCriterionEntity).toList()) );
+		entity.setCriteria(new ArrayList<>(filter.criteria().stream().map(this::toCriterionEntity).toList()));
 		entity.getCriteria().forEach(criterionEntity -> criterionEntity.setFilter(entity));
 
 		return entity;
@@ -63,8 +63,48 @@ public class FilterMapper {
 		return entity;
 	}
 
-	Filter toDto(FilterEntity entity) {
-		throw new UnsupportedOperationException("Not yet implemented");
+	public Filter toDto(FilterEntity entity) {
+		List<Criterion> criteria = entity.getCriteria().stream().map(this::toCriterion).toList();
+		return new Filter(
+				entity.getId(),
+				entity.getName(),
+				entity.getActive(),
+				criteria
+		);
+	}
+
+	private Criterion toCriterion(CriterionEntity criterionEntity) {
+		return switch (criterionEntity) {
+			case AmountCriterionEntity amountCriterionEntity -> amountCriterion(amountCriterionEntity);
+			case TitleCriterionEntity titleCriterionEntity -> titleCriterion(titleCriterionEntity);
+			case DateCriterionEntity dateCriterionEntity -> dateCriterion(dateCriterionEntity);
+			default -> throw new IllegalStateException("toCriterion: Unexpected value " + criterionEntity);
+		};
+	}
+
+	private Criterion dateCriterion(DateCriterionEntity entity) {
+		return new DateCriterion(
+				entity.getId(),
+				DateOperator.valueOf(entity.getOperator()),
+				entity.getValue().toString()
+		);
+	}
+
+	private Criterion titleCriterion(TitleCriterionEntity entity) {
+		return new TitleCriterion(
+				entity.getId(),
+				TitleOperator.valueOf(entity.getOperator()),
+				entity.getValue(),
+				entity.getCaseSensitive()
+		);
+	}
+
+	private Criterion amountCriterion(AmountCriterionEntity entity) {
+		return new AmountCriterion(
+				entity.getId(),
+				AmountOperator.valueOf(entity.getOperator()),
+				entity.getValue()
+		);
 	}
 
 	List<Filter> toList(List<FilterEntity> entityList) {
