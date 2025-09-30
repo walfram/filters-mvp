@@ -1,9 +1,8 @@
 import {inject, Injectable} from '@angular/core';
-import {BehaviorSubject, catchError, delay, finalize, map, Observable, of, tap} from 'rxjs';
-import {v4} from 'uuid';
+import {BehaviorSubject, catchError, finalize, Observable, tap} from 'rxjs';
 import {Filter} from '../types/filter';
-import {SAMPLE_FILTERS} from '../mocks/sample-filters';
 import {LoaderService} from '../../../shared/services/loader-service';
+import {HttpClient} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +13,7 @@ export class FilterService {
   public readonly filters$ = this.filtersSubject.asObservable();
 
   private readonly loaderService = inject(LoaderService);
+  private readonly httpClient = inject(HttpClient);
 
   constructor() {
     this.loadFilters();
@@ -21,7 +21,17 @@ export class FilterService {
 
   private loadFilters() {
     console.log('loading filters');
-    this.filtersSubject.next(SAMPLE_FILTERS);
+    this.httpClient.get<Filter[]>('/api/filter').subscribe({
+      next: filters => {
+        console.log('loaded filters', filters);
+        const revived = this.reviveDates(filters)
+        this.filtersSubject.next(revived);
+      },
+      error: error => {
+        console.error('error loading filters', error);
+        this.filtersSubject.next([]);
+      }
+    })
   }
 
   save(filter: Filter) {
@@ -34,8 +44,6 @@ export class FilterService {
       ...filter,
       id: filter.id || tempFilterId
     }
-
-    // TODO not sure if this will preserve optimistic filter in state - check
 
     if (filter.id) {
       // update
@@ -63,43 +71,28 @@ export class FilterService {
     );
   }
 
+  // tslint:disable-next-line:unused
   private debugRandomDelay() {
     const minDelay = 500;
     const maxDelay = 5000;
     return Math.floor(Math.random() * (maxDelay - minDelay + 1)) + minDelay;
   }
 
-  // TODO replace with actual http put
   private put(filter: Filter): Observable<Filter> {
-    console.log('updating backend', filter);
-    return of(filter).pipe(
-      delay(this.debugRandomDelay())
-    );
+    return this.httpClient.put<Filter>(`/api/filter/${filter.id}`, filter);
   }
 
-  // TODO replace with actual http post
   private post(filter: Filter): Observable<Filter> {
     console.log('saving to backend', filter);
-    const d = this.debugRandomDelay();
-    return of(filter).pipe(
-      delay(d),
-      map(f => {
-        f.id = v4();
-        console.log('new filter id', f.id);
-        return f;
-      })
-    );
+    return this.httpClient.post<Filter>('/api/filter', filter);
   }
 
   private tempFilterId(): string {
     return `temp-filter-${Date.now()}`;
   }
 
-  // TODO replace with actual http delete
   private del(filter: Filter): Observable<Filter> {
-    return of(filter).pipe(
-      delay(this.debugRandomDelay())
-    );
+    return this.httpClient.delete<Filter>(`/api/filter/${filter.id}`);
   }
 
   delete(filter: Filter): Observable<Filter> {
@@ -116,5 +109,19 @@ export class FilterService {
       }),
       finalize(() => this.loaderService.hide())
     )
+  }
+
+  private reviveDates(filters: Filter[]) {
+    return filters.map(filter => {
+      if (filter.criteria && Array.isArray(filter.criteria)) {
+        filter.criteria = filter.criteria.map((criterion: any) => {
+          if (criterion.type === 'date' && typeof criterion.value === 'string') {
+            criterion.value = new Date(criterion.value);
+          }
+          return criterion;
+        });
+      }
+      return filter;
+    });
   }
 }

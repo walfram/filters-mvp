@@ -31,4 +31,5 @@ export interface FilterFormGroup {
   id: FormControl<string>;
   name: FormControl<string>;
   criteria: FormArray<CriterionFormGroup>;
+  active: FormControl<boolean>;
 }

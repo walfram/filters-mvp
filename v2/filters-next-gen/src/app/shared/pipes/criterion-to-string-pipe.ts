@@ -45,7 +45,7 @@ function operatorToString(criterion: Criterion) {
 }
 
 export function dateToString(date: Date) {
-  return date.toLocaleDateString('et-EE');
+  return date.toLocaleDateString('et');
 }
 
 function criterionToString(criterion: Criterion) {

@@ -56,7 +56,8 @@ export class FilterForm implements OnInit {
       id: this.formBuilder.control(this.filter.id),
       name: this.formBuilder.control(this.filter.name, [Validators.required, Validators.minLength(3), Validators.maxLength(100)]),
       // new FormArray and not this.formBuilder.array 'cause TypeScript was going nuts and could not assign the correct type
-      criteria: new FormArray<CriterionFormGroup>(groups, [Validators.required])
+      criteria: new FormArray<CriterionFormGroup>(groups, [Validators.required]),
+      active: this.formBuilder.control(true)
     });
   }
 

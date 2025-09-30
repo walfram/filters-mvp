@@ -24,7 +24,8 @@ export class NewFilterPage {
   protected readonly filter: Filter = {
     id: '',
     name: '',
-    criteria: []
+    criteria: [],
+    active: true
   };
 
   onSubmit(filter: Filter) {

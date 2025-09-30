@@ -38,7 +38,8 @@ export class FilterPage {
       filter: filter || {
         id: '',
         name: '',
-        criteria: []
+        criteria: [],
+        active: true
       } as Filter
     }
 
