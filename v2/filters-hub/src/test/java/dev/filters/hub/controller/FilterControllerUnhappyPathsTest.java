@@ -1,8 +1,10 @@
 package dev.filters.hub.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.filters.hub.domain.Filter;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import dev.filters.hub.service.FilterService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -21,130 +22,136 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(FilterController.class)
 public class FilterControllerUnhappyPathsTest {
 
-  @Autowired
-  private ObjectMapper mapper;
+	@Autowired
+	private ObjectMapper mapper;
 
-  @Autowired
-  private MockMvc mockMvc;
+	@Autowired
+	private MockMvc mockMvc;
 
-  @MockitoBean
-  private FilterService filterService;
+	@MockitoBean
+	private FilterService filterService;
 
-  @ParameterizedTest
-  @ValueSource(strings = {
-      // Filter: null id (not explicitly validated but good to test for)
-      "{ \"id\": null, \"name\": \"Valid Filter\", \"active\": true, \"criteria\": [] }",
-      // Filter: blank name
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"\", \"active\": true, \"criteria\": [] }",
-      // Filter: null name
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": null, \"active\": true, \"criteria\": [] }",
-      // Filter: null active
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Valid Filter\", \"active\": null, \"criteria\": [] }",
+	@BeforeEach
+	public void setup() {
+		mapper
+				.registerModule(new JavaTimeModule())
+				.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+	}
 
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": null, \"active\": true }",
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": null, \"criteria\": [] }",
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"active\": true, \"criteria\": [] }",
-      "{}",
+	@ParameterizedTest
+	@ValueSource(strings = {
+			// Filter: null id (not explicitly validated but good to test for)
+			"{ \"id\": null, \"name\": \"Valid Filter\", \"active\": true, \"criteria\": [] }",
+			// Filter: blank name
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"\", \"active\": true, \"criteria\": [] }",
+			// Filter: null name
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": null, \"active\": true, \"criteria\": [] }",
+			// Filter: null active
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Valid Filter\", \"active\": null, \"criteria\": [] }",
 
-      // Filter: empty criteria list (assuming @NotEmpty applies to the list being non-empty, not just non-null)
-      // If @NotEmpty means "at least one element", then [] is invalid. If it means "not null and not empty", it's also invalid.
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Valid Filter\", \"active\": true, \"criteria\": [] }",
-      // Filter: null criteria list
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Valid Filter\", \"active\": true, \"criteria\": null }",
-      // Filter with AmountCondition: null operator
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Amount\", \"active\": true, \"criteria\": [ { \"type\": \"number\", \"operator\": null, \"value\": 10.0 } ] }",
-      // Filter with AmountCondition: null value
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Amount\", \"active\": true, \"criteria\": [ { \"type\": \"number\", \"operator\": \"EQUAL\", \"value\": null } ] }",
-      // Filter with DateCondition: null operator
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": null, \"value\": \"2023-01-01\" } ] }",
-      // Filter with DateCondition: blank value
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"EQUAL\", \"value\": \"\" } ] }",
-      // Filter with DateCondition: null value
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"EQUAL\", \"value\": null } ] }",
-      // Filter with DateCondition: invalid date format (missing day)
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"EQUAL\", \"value\": \"2023-01\" } ] }",
-      // Filter with DateCondition: invalid date format (extra characters)
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"EQUAL\", \"value\": \"2023-01-01x\" } ] }",
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": null, \"active\": true }",
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": null, \"criteria\": [] }",
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"active\": true, \"criteria\": [] }",
+			"{}",
+
+			// Filter: empty criteria list (assuming @NotEmpty applies to the list being non-empty, not just non-null)
+			// If @NotEmpty means "at least one element", then [] is invalid. If it means "not null and not empty", it's also invalid.
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Valid Filter\", \"active\": true, \"criteria\": [] }",
+			// Filter: null criteria list
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Valid Filter\", \"active\": true, \"criteria\": null }",
+			// Filter with AmountCondition: null operator
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Amount\", \"active\": true, \"criteria\": [ { \"type\": \"number\", \"operator\": null, \"value\": 10.0 } ] }",
+			// Filter with AmountCondition: null value
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Amount\", \"active\": true, \"criteria\": [ { \"type\": \"number\", \"operator\": \"EQUAL\", \"value\": null } ] }",
+			// Filter with DateCondition: null operator
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": null, \"value\": \"2023-01-01\" } ] }",
+			// Filter with DateCondition: blank value
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"EQUAL\", \"value\": \"\" } ] }",
+			// Filter with DateCondition: null value
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"EQUAL\", \"value\": null } ] }",
+			// Filter with DateCondition: invalid date format (missing day)
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"EQUAL\", \"value\": \"2023-01\" } ] }",
+			// Filter with DateCondition: invalid date format (extra characters)
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"EQUAL\", \"value\": \"2023-01-01x\" } ] }",
 			// Filter with DateCondition: invalid date format (ISO timestamp with time zone is not allowed)
 			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"EQUAL\", \"value\": \"2024-10-01T00:00:00.000Z\" } ] }",
-      // Filter with TitleCondition: null operator
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"string\", \"operator\": null, \"value\": \"some title\" } ] }",
-      // Filter with TitleCondition: blank value
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"string\", \"operator\": \"contains\", \"value\": \"\" } ] }",
-      // Filter with TitleCondition: null value
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"string\", \"operator\": \"contains\", \"value\": null } ] }",
-      // Filter with multiple invalid criteria (one of each type)
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Multiple Invalid Conditions\", \"active\": true, \"criteria\": [ { \"type\": \"number\", \"operator\": null, \"value\": 10.0 }, { \"type\": \"date\", \"operator\": \"equals\", \"value\": \"invalid-date\" }, { \"type\": \"string\", \"operator\": \"contains\", \"value\": \"\" } ] }",
-      // Filter with valid top-level fields but a null condition in the list
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Valid Filter Name\", \"active\": true, \"criteria\": [null] }"
-  })
-  void should_return_400_for_create_filter_malformed_payload(String malformedPayload) throws Exception {
-    mockMvc.perform(
-            post("/api/filter")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(malformedPayload)
-        )
-        .andExpect(status().isBadRequest());
-  }
+			// Filter with TitleCondition: null operator
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"string\", \"operator\": null, \"value\": \"some title\" } ] }",
+			// Filter with TitleCondition: blank value
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"string\", \"operator\": \"contains\", \"value\": \"\" } ] }",
+			// Filter with TitleCondition: null value
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"string\", \"operator\": \"contains\", \"value\": null } ] }",
+			// Filter with multiple invalid criteria (one of each type)
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Multiple Invalid Conditions\", \"active\": true, \"criteria\": [ { \"type\": \"number\", \"operator\": null, \"value\": 10.0 }, { \"type\": \"date\", \"operator\": \"equals\", \"value\": \"invalid-date\" }, { \"type\": \"string\", \"operator\": \"contains\", \"value\": \"\" } ] }",
+			// Filter with valid top-level fields but a null condition in the list
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Valid Filter Name\", \"active\": true, \"criteria\": [null] }"
+	})
+	void should_return_400_for_create_filter_malformed_payload(String malformedPayload) throws Exception {
+		mockMvc.perform(
+						post("/api/filter")
+								.contentType(MediaType.APPLICATION_JSON)
+								.content(malformedPayload)
+				)
+				.andExpect(status().isBadRequest());
+	}
 
-  @ParameterizedTest
-  @ValueSource(strings = {
-      // Filter: null id (not explicitly validated but good to test for)
-      "{ \"id\": null, \"name\": \"Valid Filter\", \"active\": true, \"criteria\": [] }",
-      // Filter: blank name
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"\", \"active\": true, \"criteria\": [] }",
-      // Filter: null name
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": null, \"active\": true, \"criteria\": [] }",
-      // Filter: null active
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Valid Filter\", \"active\": null, \"criteria\": [] }",
+	@ParameterizedTest
+	@ValueSource(strings = {
+			// Filter: null id (not explicitly validated but good to test for)
+			"{ \"id\": null, \"name\": \"Valid Filter\", \"active\": true, \"criteria\": [] }",
+			// Filter: blank name
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"\", \"active\": true, \"criteria\": [] }",
+			// Filter: null name
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": null, \"active\": true, \"criteria\": [] }",
+			// Filter: null active
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Valid Filter\", \"active\": null, \"criteria\": [] }",
 
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": null, \"active\": true }",
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": null, \"criteria\": [] }",
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"active\": true, \"criteria\": [] }",
-      "{}",
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": null, \"active\": true }",
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": null, \"criteria\": [] }",
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"active\": true, \"criteria\": [] }",
+			"{}",
 
-      // Filter: empty criteria list (assuming @NotEmpty applies to the list being non-empty, not just non-null)
-      // If @NotEmpty means "at least one element", then [] is invalid. If it means "not null and not empty", it's also invalid.
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Valid Filter\", \"active\": true, \"criteria\": [] }",
-      // Filter: null criteria list
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Valid Filter\", \"active\": true, \"criteria\": null }",
-      // Filter with AmountCondition: null operator
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Amount\", \"active\": true, \"criteria\": [ { \"type\": \"number\", \"operator\": null, \"value\": 10.0 } ] }",
-      // Filter with AmountCondition: null value
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Amount\", \"active\": true, \"criteria\": [ { \"type\": \"number\", \"operator\": \"eq\", \"value\": null } ] }",
-      // Filter with DateCondition: null operator
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": null, \"value\": \"2023-01-01\" } ] }",
-      // Filter with DateCondition: blank value
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"equals\", \"value\": \"\" } ] }",
-      // Filter with DateCondition: null value
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"equals\", \"value\": null } ] }",
-      // Filter with DateCondition: value is omitted
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"equals\" } ] }",
-      // Filter with DateCondition: invalid date format (missing day)
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"equals\", \"value\": \"2023-01\" } ] }",
-      // Filter with DateCondition: invalid date format (extra characters)
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"equals\", \"value\": \"2023-01-01x\" } ] }",
-      // Filter with TitleCondition: null operator
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"string\", \"operator\": null, \"value\": \"some title\" } ] }",
-      // Filter with TitleCondition: blank value
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"string\", \"operator\": \"contains\", \"value\": \"\" } ] }",
-      // Filter with TitleCondition: null value
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"string\", \"operator\": \"contains\", \"value\": null } ] }",
-      // Filter with multiple invalid criteria (one of each type)
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Multiple Invalid Conditions\", \"active\": true, \"criteria\": [ { \"type\": \"number\", \"operator\": null, \"value\": 10.0 }, { \"type\": \"date\", \"operator\": \"equals\", \"value\": \"invalid-date\" }, { \"type\": \"string\", \"operator\": \"contains\", \"value\": \"\" } ] }",
-      // Filter with valid top-level fields but a null condition in the list
-      "{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Valid Filter Name\", \"active\": true, \"criteria\": [null] }"
-  })
-  void should_return_400_for_update_filter_malformed_payload(String malformedPayload) throws Exception {
-    Filter filter = mapper.readValue(malformedPayload, Filter.class);
-    String id = Optional.ofNullable(filter.id()).map(UUID::toString).orElse(null);
+			// Filter: empty criteria list (assuming @NotEmpty applies to the list being non-empty, not just non-null)
+			// If @NotEmpty means "at least one element", then [] is invalid. If it means "not null and not empty", it's also invalid.
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Valid Filter\", \"active\": true, \"criteria\": [] }",
+			// Filter: null criteria list
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Valid Filter\", \"active\": true, \"criteria\": null }",
+			// Filter with AmountCondition: null operator
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Amount\", \"active\": true, \"criteria\": [ { \"type\": \"number\", \"operator\": null, \"value\": 10.0 } ] }",
+			// Filter with AmountCondition: null value
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Amount\", \"active\": true, \"criteria\": [ { \"type\": \"number\", \"operator\": \"eq\", \"value\": null } ] }",
+			// Filter with DateCondition: null operator
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": null, \"value\": \"2023-01-01\" } ] }",
+			// Filter with DateCondition: blank value
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"equals\", \"value\": \"\" } ] }",
+			// Filter with DateCondition: null value
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"equals\", \"value\": null } ] }",
+			// Filter with DateCondition: value is omitted
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"equals\" } ] }",
+			// Filter with DateCondition: invalid date format (missing day)
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"equals\", \"value\": \"2023-01\" } ] }",
+			// Filter with DateCondition: invalid date format (extra characters)
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Date\", \"active\": true, \"criteria\": [ { \"type\": \"date\", \"operator\": \"equals\", \"value\": \"2023-01-01x\" } ] }",
+			// Filter with TitleCondition: null operator
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"string\", \"operator\": null, \"value\": \"some title\" } ] }",
+			// Filter with TitleCondition: blank value
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"string\", \"operator\": \"contains\", \"value\": \"\" } ] }",
+			// Filter with TitleCondition: null value
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Invalid Title\", \"active\": true, \"criteria\": [ { \"type\": \"string\", \"operator\": \"contains\", \"value\": null } ] }",
+			// Filter with multiple invalid criteria (one of each type)
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Filter with Multiple Invalid Conditions\", \"active\": true, \"criteria\": [ { \"type\": \"number\", \"operator\": null, \"value\": 10.0 }, { \"type\": \"date\", \"operator\": \"equals\", \"value\": \"invalid-date\" }, { \"type\": \"string\", \"operator\": \"contains\", \"value\": \"\" } ] }",
+			// Filter with valid top-level fields but a null condition in the list
+			"{ \"id\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"name\": \"Valid Filter Name\", \"active\": true, \"criteria\": [null] }"
+	})
+	void should_return_400_for_update_filter_malformed_payload(String malformedPayload) throws Exception {
+		String id = UUID.randomUUID().toString();
 
-    mockMvc.perform(
-            put("/api/filter/" + id)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(malformedPayload)
-        )
-        .andExpect(status().isBadRequest());
-  }
+		mockMvc.perform(
+						put("/api/filter/" + id)
+								.contentType(MediaType.APPLICATION_JSON)
+								.content(malformedPayload)
+				)
+				.andExpect(status().isBadRequest());
+	}
 
 }

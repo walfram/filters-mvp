@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -61,7 +60,7 @@ public class DatabaseInitializer implements CommandLineRunner {
 						true,
 						List.of(
 								new TitleCriterion(null, TitleOperator.contains, "Report", false),
-								new DateCriterion(null, DateOperator.after, LocalDate.now().minusMonths(3).toString()) // Last 3 months
+								new DateCriterion(null, DateOperator.after, LocalDate.now().minusMonths(3)) // Last 3 months
 						)
 				),
 				// Filter 3: Multiple Conditions of Different Types
@@ -72,7 +71,7 @@ public class DatabaseInitializer implements CommandLineRunner {
 						List.of(
 								new AmountCriterion(null, AmountOperator.gte, 100.0),
 								new TitleCriterion(null, TitleOperator.startsWith, "Sale", false),
-								new DateCriterion(null, DateOperator.equals, "2025-06-15")
+								new DateCriterion(null, DateOperator.equals, LocalDate.parse("2025-06-15"))
 						)
 				),
 				// Filter 4: Only Title Condition (Case-Insensitive Example if operators allowed)
@@ -91,7 +90,7 @@ public class DatabaseInitializer implements CommandLineRunner {
 						true,
 						List.of(
 								new AmountCriterion(null, AmountOperator.lte, 75.0),
-								new DateCriterion(null, DateOperator.before, "2024-12-31")
+								new DateCriterion(null, DateOperator.before, LocalDate.parse("2024-12-31"))
 						)
 				)
 		);

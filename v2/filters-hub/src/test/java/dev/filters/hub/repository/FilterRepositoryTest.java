@@ -1,6 +1,8 @@
 package dev.filters.hub.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import dev.filters.hub.domain.Filter;
 import dev.filters.hub.entity.FilterEntity;
 import dev.filters.hub.mapper.FilterMapper;
@@ -24,13 +26,20 @@ import static org.junit.jupiter.api.Assertions.*;
 @Import(FilterMapper.class)
 public class FilterRepositoryTest {
 
+	private static final ObjectMapper objectMapper = new ObjectMapper();
+
+	static {
+		objectMapper
+				.registerModule(new JavaTimeModule())
+				.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+	}
+
 	@Autowired
 	private FilterEntityRepository repository;
 
 	@Autowired
 	private TestEntityManager manager;
 
-	private static final ObjectMapper objectMapper = new ObjectMapper();
 
 	@Autowired
 	private FilterMapper filterMapper;

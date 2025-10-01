@@ -6,7 +6,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class FilterMapper {
 		DateCriterionEntity entity = new DateCriterionEntity();
 
 		entity.setOperator(dateCriterion.operator().name());
-		entity.setValue(LocalDate.parse(dateCriterion.value()));
+		entity.setValue(dateCriterion.value());
 
 		return entity;
 	}
@@ -86,7 +85,7 @@ public class FilterMapper {
 		return new DateCriterion(
 				entity.getId(),
 				DateOperator.valueOf(entity.getOperator()),
-				entity.getValue().toString()
+				entity.getValue()
 		);
 	}
 
@@ -105,10 +104,6 @@ public class FilterMapper {
 				AmountOperator.valueOf(entity.getOperator()),
 				entity.getValue()
 		);
-	}
-
-	List<Filter> toList(List<FilterEntity> entityList) {
-		throw new UnsupportedOperationException("Not yet implemented");
 	}
 
 }

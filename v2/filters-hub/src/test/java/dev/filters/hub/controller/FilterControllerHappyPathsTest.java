@@ -147,7 +147,8 @@ public class FilterControllerHappyPathsTest {
 				"criteria": [
 					{ "type": "number", "operator": "gte", "value": 250.0 },
 					{ "type": "string", "operator": "startsWith", "value": "Revised Report" },
-					{ "type": "date", "operator": "after", "value": "2024-06-01" }
+					{ "type": "date", "operator": "after", "value": "2024-06-01" },
+					{ "type": "date", "operator": "after", "value": "2025-10-01T18:16:10.652Z" }
 				]
 			}
 			""",
