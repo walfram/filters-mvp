@@ -111,9 +111,8 @@ export class FilterForm implements OnInit {
 
   onSubmit() {
     console.log('raw value', this.form.getRawValue());
-    console.log('value', this.form.value);
-
     console.log('is form valid?', this.form.valid);
+    console.log('form.value', this.form.value);
 
     if (this.form.valid) {
       this.submit.emit({
@@ -130,13 +129,8 @@ export class FilterForm implements OnInit {
   }
 
   onTypeChange(type: string, index: number) {
-    console.log('onTypeChange @', index);
     const control = this.criteria.at(index);
-    console.log('control', control);
-    // const type = control.get('type')?.value;
-    console.log('type', type);
     const id = control.controls.id.value;
-    console.log('id', id);
 
     switch (type) {
       case 'number':
@@ -188,6 +182,4 @@ export class FilterForm implements OnInit {
       value: new Date()
     }
   }
-
-  protected readonly String = String;
 }

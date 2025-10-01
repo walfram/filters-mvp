@@ -21,6 +21,8 @@ export class FilterService {
 
   private loadFilters() {
     console.log('loading filters');
+    this.loaderService.show();
+
     this.httpClient.get<Filter[]>('/api/filter').subscribe({
       next: filters => {
         console.log('loaded filters', filters);
@@ -30,8 +32,9 @@ export class FilterService {
       error: error => {
         console.error('error loading filters', error);
         this.filtersSubject.next([]);
-      }
-    })
+      },
+      complete: () => this.loaderService.hide()
+    });
   }
 
   save(filter: Filter) {

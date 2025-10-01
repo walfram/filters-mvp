@@ -12,4 +12,7 @@ export const routes: Routes = [{
 }, {
   path: 'debug/dialog',
   component: DebugDialog
+}, {
+  path: '**',
+  redirectTo: '/filters',
 }];

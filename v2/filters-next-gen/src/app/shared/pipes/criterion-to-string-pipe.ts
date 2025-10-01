@@ -44,8 +44,9 @@ function operatorToString(criterion: Criterion) {
   }
 }
 
-export function dateToString(date: Date) {
-  return date.toLocaleDateString('et');
+export function dateToString(date: Date | string) {
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  return dateObj.toLocaleDateString('et');
 }
 
 function criterionToString(criterion: Criterion) {
